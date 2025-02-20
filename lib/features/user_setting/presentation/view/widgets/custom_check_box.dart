@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 
 class CustomCheckBox extends StatelessWidget {
   final String label;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/features/home/presentation/home_cubit/home_cubit.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/home_breif.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/home_header.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/admin_specific_widget.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/last_password_widget.dart';
+import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_breif.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_header.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/admin_specific_widget.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/last_password_widget.dart';
 
 class HomeView extends StatelessWidget {
   final String role;

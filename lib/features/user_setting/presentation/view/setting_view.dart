@@ -3,16 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:password_gen/core/widgets/customButton.dart';
-import 'package:password_gen/features/user_setting/presentation/setting_cubit/setting_cubit.dart';
-import 'package:password_gen/features/user_setting/presentation/view/admin_settings.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/copy_result_container.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/countdown_progress_bar.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/header.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/password_button.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/password_leangth.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/password_setting.dart';
-import 'package:password_gen/features/user_setting/presentation/view/widgets/user_save_password_button.dart';
+import 'package:IOT_SmartHome/core/widgets/customButton.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/setting_cubit/setting_cubit.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/admin_settings.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/copy_result_container.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/countdown_progress_bar.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/header.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/password_button.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/password_leangth.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/password_setting.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/widgets/user_save_password_button.dart';
 
 import '../../../home/presentation/views/widgets/home_nav_bar.dart';
 

@@ -2,11 +2,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:password_gen/core/database/cache/cache_helper.dart';
-import 'package:password_gen/core/function/navigation.dart';
-import 'package:password_gen/core/serveces/service_locator.dart';
-import 'package:password_gen/core/utils/app_string.dart';
-import 'package:password_gen/core/utils/app_text_style.dart';
+import 'package:IOT_SmartHome/core/database/cache/cache_helper.dart';
+import 'package:IOT_SmartHome/core/function/navigation.dart';
+import 'package:IOT_SmartHome/core/serveces/service_locator.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

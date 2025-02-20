@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:password_gen/core/function/custom_troast.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/core/widgets/customButton.dart';
-import 'package:password_gen/features/auth/presentation/auth_cubit/auth_cubit.dart';
-import 'package:password_gen/features/auth/presentation/auth_cubit/auth_state.dart';
-import 'package:password_gen/features/auth/widgets/text_form_field.dart';
-import 'package:password_gen/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/widgets/customButton.dart';
+import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_cubit.dart';
+import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_state.dart';
+import 'package:IOT_SmartHome/features/auth/widgets/text_form_field.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
 
 import '../../../core/utils/app_string.dart';
 import 'chek_buttom.dart';

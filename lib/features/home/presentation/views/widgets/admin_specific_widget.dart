@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/widgets/customButton.dart';
+import 'package:IOT_SmartHome/core/widgets/customButton.dart';
 
 class AdminSpecificWidget extends StatelessWidget {
   const AdminSpecificWidget({super.key});

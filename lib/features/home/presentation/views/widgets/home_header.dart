@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/core/utils/app_string.dart';
-import 'package:password_gen/core/utils/app_text_style.dart';
-import 'package:password_gen/features/auth/widgets/welcome_text.dart';
-import 'package:password_gen/features/home/presentation/home_cubit/home_cubit.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/log_out_buttom.dart';
-import 'package:password_gen/features/home/presentation/views/widgets/pick_image_widget.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
+import 'package:IOT_SmartHome/features/auth/widgets/welcome_text.dart';
+import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/log_out_buttom.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/pick_image_widget.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/features/home/presentation/home_cubit/home_cubit.dart';
+import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
 
 // ignore: camel_case_types
 class log_out extends StatelessWidget {

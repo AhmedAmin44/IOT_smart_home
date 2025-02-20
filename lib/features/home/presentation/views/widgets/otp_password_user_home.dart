@@ -1,12 +1,12 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:password_gen/core/function/custom_troast.dart';
-// import 'package:password_gen/core/function/navigation.dart';
-// import 'package:password_gen/core/utils/app_colors.dart';
-// import 'package:password_gen/features/auth/presentation/auth_cubit/auth_cubit.dart';
-// import 'package:password_gen/features/auth/presentation/auth_cubit/auth_state.dart';
-// import 'package:password_gen/features/otp_screen/presentation/cubit/otp_cubit.dart';
+// import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+// import 'package:IOT_SmartHome/core/function/navigation.dart';
+// import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+// import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_cubit.dart';
+// import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_state.dart';
+// import 'package:IOT_SmartHome/features/otp_screen/presentation/cubit/otp_cubit.dart';
 
 // class OtpScreenUserHome extends StatefulWidget {
 //   const OtpScreenUserHome({super.key});

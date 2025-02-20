@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/features/user_setting/domain/entities/password_settings.dart';
-import 'package:password_gen/features/user_setting/domain/use_cases/password_use_case.dart';
+import 'package:IOT_SmartHome/features/user_setting/domain/entities/password_settings.dart';
+import 'package:IOT_SmartHome/features/user_setting/domain/use_cases/password_use_case.dart';
 
 part 'setting_state.dart';
 

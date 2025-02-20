@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/core/utils/app_string.dart';
-import 'package:password_gen/core/utils/app_text_style.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
 import 'package:screenutil_module/main.dart';
 
 class HomeBreif extends StatelessWidget {

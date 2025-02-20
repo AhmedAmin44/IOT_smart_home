@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:password_gen/core/utils/app_images.dart';
+import 'package:IOT_SmartHome/core/utils/app_images.dart';
 
 class ForgetPasswordImage extends StatelessWidget {
   const ForgetPasswordImage({super.key});

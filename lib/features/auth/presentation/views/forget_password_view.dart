@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:password_gen/core/function/navigation.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/core/utils/app_string.dart';
-import 'package:password_gen/features/auth/widgets/welcome_text.dart';
+import 'package:IOT_SmartHome/core/function/navigation.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/features/auth/widgets/welcome_text.dart';
 
 import '../../widgets/custom_forgetPassword_form.dart';
 import '../../widgets/forget_password_image.dart';

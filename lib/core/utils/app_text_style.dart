@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 
 abstract class CustomTextStyles {
   static final pacifico400style64 = TextStyle(

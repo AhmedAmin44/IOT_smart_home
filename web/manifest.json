@@ -1,6 +1,6 @@
 {
-    "name": "password_gen",
-    "short_name": "password_gen",
+    "name": "IOT_SmartHome",
+    "short_name": "IOT_SmartHome",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

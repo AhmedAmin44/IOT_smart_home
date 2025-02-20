@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:password_gen/core/function/custom_troast.dart';
-import 'package:password_gen/features/home/presentation/home_cubit/home_cubit.dart';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
 
 class PickImageWidget extends StatelessWidget {
   const PickImageWidget({

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/features/auth/presentation/auth_cubit/auth_cubit.dart';
+import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_cubit.dart';
 
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_string.dart';

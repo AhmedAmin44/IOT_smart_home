@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/function/navigation.dart';
+import 'package:IOT_SmartHome/core/function/navigation.dart';
 
 import '../../../core/utils/app_string.dart';
 import '../../../core/utils/app_text_style.dart';

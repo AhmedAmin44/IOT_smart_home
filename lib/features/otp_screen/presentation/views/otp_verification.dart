@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:password_gen/core/function/custom_troast.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
-import 'package:password_gen/features/otp_screen/presentation/widgets/otp_field.dart';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/widgets/otp_field.dart';
 
 class OtpScreen extends StatefulWidget {
   final String successRoute; // Route name to navigate after success

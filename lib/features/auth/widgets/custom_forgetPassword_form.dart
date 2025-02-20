@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/core/function/custom_troast.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/features/auth/presentation/auth_cubit/auth_cubit.dart';
-import 'package:password_gen/features/auth/presentation/auth_cubit/auth_state.dart';
-import 'package:password_gen/features/auth/widgets/text_form_field.dart';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_cubit.dart';
+import 'package:IOT_SmartHome/features/auth/presentation/auth_cubit/auth_state.dart';
+import 'package:IOT_SmartHome/features/auth/widgets/text_form_field.dart';
 import '../../../core/function/navigation.dart';
 import '../../../core/utils/app_string.dart';
 import '../../../core/widgets/customButton.dart';

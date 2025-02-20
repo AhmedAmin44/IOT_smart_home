@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
 import '../../../../core/function/navigation.dart';
 import '../../widgets/banner_login.dart';
 import '../../widgets/check_account_text.dart';

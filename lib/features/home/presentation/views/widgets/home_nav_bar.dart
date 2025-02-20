@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/core/utils/app_images.dart';
-import 'package:password_gen/features/home/presentation/views/home_view.dart';
-import 'package:password_gen/features/user_setting/presentation/view/user_setting.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_images.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/home_view.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/view/user_setting.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

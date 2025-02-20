@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class Header extends StatelessWidget {

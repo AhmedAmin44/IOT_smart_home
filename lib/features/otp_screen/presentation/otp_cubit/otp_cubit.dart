@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/core/function/navigation.dart';
+import 'package:IOT_SmartHome/core/function/navigation.dart';
 
 part 'otp_state.dart';
 

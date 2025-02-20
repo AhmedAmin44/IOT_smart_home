@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/features/home/presentation/home_cubit/home_cubit.dart';
-import 'package:password_gen/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
+import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
 
 import '../../../../otp_screen/presentation/views/otp_verification.dart';
 

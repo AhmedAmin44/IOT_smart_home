@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/core/utils/app_colors.dart';
-import 'package:password_gen/features/user_setting/presentation/setting_cubit/setting_cubit.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/features/user_setting/presentation/setting_cubit/setting_cubit.dart';
 
 class CopyResultContainer extends StatefulWidget {
   const CopyResultContainer({super.key});
