@@ -20,14 +20,15 @@ class CustomSignInForm extends StatelessWidget {
     AuthCubit authCubit = BlocProvider.of<AuthCubit>(context);
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) async {
-        if (state is SignInSuccessState|| state is OTPSentState) {
+        if (state is SignInSuccessState || state is OTPSentState) {
           User? user = FirebaseAuth.instance.currentUser;
 
-          if (user != null && user.emailVerified) {
-            WidgetsBinding.instance.addPostFrameCallback((_){ //async {
-              //String role = await _fetchUserRole();
-             // context.go("/homeNavBar", extra: role);
-              context.go("/otp_verification", extra: "fromLogin");
+          if (user != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              String role = await _fetchUserRole();
+              if (state is SignInSuccessState) {
+                context.go("/homeNavBar", extra: {'role': role, 'familyId': state.familyId});
+              }
             });
           } else {
             ShowToast("Please verify your email before proceeding.");

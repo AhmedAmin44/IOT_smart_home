@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/core/function/custom_troast.dart';
-import 'package:password_gen/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
+import 'package:uuid/uuid.dart';
+import 'dart:math';
 
 import 'auth_state.dart';
 
@@ -20,6 +22,8 @@ class AuthCubit extends Cubit<AuthState> {
   String verificationId = '';
   String? otpCode;
   String? verifyPassword;
+  String? role;
+  String? familyId;
 
   bool obscureVerifyPasswordTextValue = true;
   bool? termsAndConditionsChekBox = false;
@@ -31,49 +35,188 @@ class AuthCubit extends Cubit<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   OtpCubit otpCubit = OtpCubit();
+  Future<bool> _isFirstUser() async {
+    final result = await _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'father')
+        .limit(1)
+        .get();
+    return result.docs.isEmpty;
+  }
+
+  @override
+  Future<void> close() {
+    // Perform any necessary cleanup here
+    return super.close();
+  }
+
+  void _emitState(AuthState state) {
+    if (!isClosed) {
+      emit(state);
+    }
+  }
 
   Future<void> signUpWithEmailAndPassword() async {
     try {
-      emit(SignUpLoadingState());
+      _emitState(SignUpLoadingState());
+      final isFirstUser = await _isFirstUser();
 
-      final UserCredential credential =
-          await _auth.createUserWithEmailAndPassword(
+      if (firstName == null || lastName == null || phone == null || emailAddress == null || password == null) {
+        _emitState(SignUpFailureState(errmsg: 'املأ جميع الحقول المطلوبة'));
+        return;
+      }
+
+      if (isFirstUser) {
+        role = 'father';
+        familyId = const Uuid().v4();
+      } else {
+        _emitState(SignUpFailureState(errmsg: 'التسجيل مسموح فقط لرب الأسرة'));
+        return;
+      }
+
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: emailAddress!,
         password: password!,
       );
 
-      String uid = credential.user!.uid;
+      await _firestore.collection('users').doc(credential.user!.uid).set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': emailAddress,
+        'phone': phone,
+        'role': role,
+        'familyId': familyId,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
-      // Retrieve user Email from Firestore
+      await _verifyPhoneNumber(phone!);
+      String uid = credential.user!.uid;
       await addUserProfile(uid);
       emailAddress = await getUserEmail(uid);
 
       await otpCubit.sendOTP();
       await sendVerificationEmail();
-      emit(SignUpSuccessState());
+      _emitState(SignUpSuccessState());
     } on FirebaseAuthException catch (e) {
       _handleSignUpException(e);
     } catch (e) {
-      emit(SignUpFailureState(errmsg: e.toString()));
+      _emitState(SignUpFailureState(errmsg: e.toString()));
     }
   }
 
+  Future<void> _verifyPhoneNumber(String phone) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (credential) async {
+        await _auth.currentUser!.linkWithCredential(credential);
+      },
+      verificationFailed: (e) {
+        _emitState(SignUpFailureState(errmsg: 'فشل التحقق: ${e.message}'));
+      },
+      codeSent: (verificationId, _) {
+        this.verificationId = verificationId;
+        _emitState(PhoneCodeSentState());
+      },
+      codeAutoRetrievalTimeout: (_) {},
+    );
+  }
+
+  Future<void> verifyPhoneOTP(String smsCode) async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      await _auth.currentUser!.linkWithCredential(credential);
+      _emitState(PhoneVerificationSuccessState());
+    } catch (e) {
+      _emitState(SignUpFailureState(errmsg: 'كود التحقق غير صحيح'));
+    }
+  }
+
+  Future<void> sendFamilyInvite({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String role,
+  }) async {
+    try {
+      if (this.role != 'father') {
+        _emitState(OperationFailureState(errMsg: 'غير مصرح بهذا الإجراء'));
+        return;
+      }
+
+      await _firestore.collection('family_invites').doc(email).set({
+        'familyId': familyId,
+        'firstName': firstName,
+        'lastName': lastName,
+        'role': role,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      _emitState(InviteSentSuccessState());
+    } catch (e) {
+      _emitState(OperationFailureState(errMsg: e.toString()));
+    }
+  }
+
+  Future<void> joinFamilyWithInvite({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      _emitState(SignUpLoadingState());
+      final inviteDoc = await _firestore.collection('family_invites').doc(email).get();
+
+      if (!inviteDoc.exists) {
+        _emitState(SignUpFailureState(errmsg: 'رمز الدعوة غير صالح'));
+        return;
+      }
+
+      if (firstName == null || lastName == null || phone == null) {
+        _emitState(SignUpFailureState(errmsg: 'املأ جميع الحقول المطلوبة'));
+        return;
+      }
+
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      await _firestore.collection('users').doc(credential.user!.uid).set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'phone': phone,
+        'role': 'child',
+        'familyId': inviteDoc['familyId'],
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      await inviteDoc.reference.delete();
+      _emitState(SignUpSuccessState());
+    } on FirebaseAuthException catch (e) {
+      _emitState(SignUpFailureState(errmsg: e.message ?? 'فشل التسجيل'));
+    }
+  }
+
+
   void _handleSignUpException(FirebaseAuthException e) {
     if (e.code == 'weak-password') {
-      emit(SignUpFailureState(errmsg: 'The password provided is too weak.'));
+      _emitState(SignUpFailureState(errmsg: 'The password provided is too weak.'));
     } else if (e.code == 'email-already-in-use') {
-      emit(SignUpFailureState(
+      _emitState(SignUpFailureState(
           errmsg: 'The account already exists for that email.'));
     } else if (e.code == 'invalid-email') {
-      emit(SignUpFailureState(errmsg: 'The Email is Invalid.'));
+      _emitState(SignUpFailureState(errmsg: 'The Email is Invalid.'));
     } else {
-      emit(SignUpFailureState(errmsg: e.code));
+      _emitState(SignUpFailureState(errmsg: e.code));
     }
   }
 
   void obscureVerifyPasswordText() {
     obscureVerifyPasswordTextValue = !obscureVerifyPasswordTextValue;
-    emit(AuthInitial());
+    _emitState(AuthInitial());
   }
 
   Future<String?> getUserEmail(String uid) async {
@@ -111,50 +254,95 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> signInWithEmailAndPassword() async {
+ Future<void> signInWithEmailAndPassword() async {
+  try {
+    _emitState(SignInLoadingState());
+
+    if (emailAddress == null || password == null) {
+      _emitState(SignInFailureState(errMsg: "املأ جميع الحقول المطلوبة"));
+      return;
+    }
+
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: emailAddress!,
+      password: password!,
+    );
+
+    if (userCredential.user == null) {
+      _emitState(SignInFailureState(errMsg: "Authentication failed."));
+      return;
+    }
+
+    User? user = _auth.currentUser;
+    if (user == null) {
+      _emitState(SignInFailureState(errMsg: "User not found."));
+      return;
+    }
+
+    // 🔹 Fetch user role and familyId from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      _emitState(SignInFailureState(errMsg: "User data not found."));
+      return;
+    }
+
+    role = userDoc['role'] ?? 'user';
+    familyId = userDoc['familyId'];
+    emailAddress = user.email;
+
+    // 🔹 Emit SignInSuccessState with role and familyId
+    _emitState(SignInSuccessState(role: role!, familyId: familyId!));
+  } on FirebaseAuthException catch (e) {
+    _emitState(SignInFailureState(
+        errMsg: e.message ?? "Check your email and password."));
+  } catch (e) {
+    _emitState(SignInFailureState(errMsg: e.toString()));
+  }
+}
+
+  Future<void> requestDeviceAccess(String deviceId) async {
+    if (role != 'child') return;
+
+    final otp = (1000 + Random().nextInt(9000)).toString();
+    await _firestore.collection('requests').add({
+      'childId': _auth.currentUser!.uid,
+      'deviceId': deviceId,
+      'otp': otp,
+      'status': 'pending',
+      'timestamp': FieldValue.serverTimestamp(),
+      'familyId': familyId,
+    });
+
+    _emitState(OTPGeneratedState(otp: otp));
+  }
+
+  Future<void> approveRequest(String otp) async {
     try {
-      emit(SignInLoadingState());
-
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: emailAddress ?? '',
-        password: password ?? '',
-      );
-
-      if (userCredential.user == null) {
-        emit(SignInFailureState(errMsg: "Authentication failed."));
-        return;
-      }
-
-      User? user = _auth.currentUser;
-      if (user == null) {
-        emit(SignInFailureState(errMsg: "User not found."));
-        return;
-      }
-
-      // 🔹 Fetch user role from Firestore
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
+      final requestSnapshot = await _firestore
+          .collection('requests')
+          .where('otp', isEqualTo: otp)
+          .where('familyId', isEqualTo: familyId)
+          .where('status', isEqualTo: 'pending')
           .get();
 
-      if (!userDoc.exists) {
-        emit(SignInFailureState(errMsg: "User data not found."));
+      if (requestSnapshot.docs.isEmpty) {
+        _emitState(RequestApprovalFailureState(errMsg: 'كود التحقق غير صحيح'));
         return;
       }
 
-      String role = userDoc['role'] ?? 'user';
-      emailAddress = user.email;
+      await requestSnapshot.docs.first.reference.update({
+        'status': 'approved',
+        'approvedBy': _auth.currentUser!.uid,
+        'approvedAt': FieldValue.serverTimestamp(),
+      });
 
-      // 🔹 Send OTP before proceeding
-      await otpCubit.sendOTP();
-
-      // 🔹 Emit OTPSentState instead of navigating here
-      emit(OTPSentState(role: role));
-    } on FirebaseAuthException catch (e) {
-      emit(SignInFailureState(
-          errMsg: e.message ?? "Check your email and password."));
+      _emitState(RequestApprovalSuccessState());
     } catch (e) {
-      emit(SignInFailureState(errMsg: e.toString()));
+      _emitState(RequestApprovalFailureState(errMsg: e.toString()));
     }
   }
 
@@ -178,18 +366,18 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> resetPasswordWithLink() async {
     try {
-      emit(ResetPasswordLoadingState());
+      _emitState(ResetPasswordLoadingState());
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailAddress ?? '');
-      emit(ResetPasswordSuccessState());
+      _emitState(ResetPasswordSuccessState());
     } catch (e) {
-      emit(ResetPasswordFailureState(errMsg: e.toString()));
+      _emitState(ResetPasswordFailureState(errMsg: e.toString()));
     }
   }
 
   void updateTermsAndConditionsChekBox({newValue}) {
     termsAndConditionsChekBox = newValue;
-    emit(TermsAndConditionsChekBoxState());
+    _emitState(TermsAndConditionsChekBoxState());
   }
 
   void obscurePasswordText() {
@@ -198,7 +386,7 @@ class AuthCubit extends Cubit<AuthState> {
     } else {
       obscurePasswordTextValue = true;
     }
-    emit(ObscurePasswordTextUpdateState());
+    _emitState(ObscurePasswordTextUpdateState());
   }
 }
 

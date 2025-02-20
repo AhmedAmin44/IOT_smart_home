@@ -10,7 +10,7 @@ import 'package:IOT_SmartHome/features/home/presentation/views/widgets/log_out_b
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/pick_image_widget.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  const HomeHeader({super.key, IconButton? trailing});
 
   @override
   Widget build(BuildContext context) {

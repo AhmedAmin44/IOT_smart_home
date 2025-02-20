@@ -23,8 +23,9 @@ final class PhoneVerificationFailureState extends AuthState {
 final class SignInLoadingState extends AuthState {}
 
 final class SignInSuccessState extends AuthState {
- final String role;
-  SignInSuccessState({required this.role});
+  final String role;
+  final String familyId;
+  SignInSuccessState({required this.role, required this.familyId});
 }
 final class SignInFailureState extends AuthState{
   final String errMsg;
@@ -40,3 +41,24 @@ final class ResetPasswordFailureState extends AuthState{
 final class TermsAndConditionsChekBoxState extends AuthState {}
 
 final class ObscurePasswordTextUpdateState extends AuthState {}
+
+class ParentDashboardState extends AuthState {
+  final String role;
+  ParentDashboardState({required this.role});
+}
+class ChildDashboardState extends AuthState {}
+class InviteSentSuccessState extends AuthState {}
+class OperationFailureState extends AuthState {
+  final String errMsg;
+  OperationFailureState({required this.errMsg});
+}
+class OTPGeneratedState extends AuthState {
+  final String otp;
+  OTPGeneratedState({required this.otp});
+}
+class RequestApprovalSuccessState extends AuthState {}
+class RequestApprovalFailureState extends AuthState {
+  final String errMsg;
+  RequestApprovalFailureState({required this.errMsg});
+}
+class PhoneCodeSentState extends AuthState {}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:IOT_SmartHome/features/home/presentation/home_cubit/home_cubit.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_breif.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_header.dart';
@@ -8,13 +9,15 @@ import 'package:IOT_SmartHome/features/home/presentation/views/widgets/last_pass
 
 class HomeView extends StatelessWidget {
   final String role;
-  const HomeView({super.key, required this.role});
+  final String familyId;
+
+  const HomeView({super.key, required this.role, required this.familyId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
             child: SizedBox(
@@ -22,16 +25,29 @@ class HomeView extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: HomeHeader(),
-          ),
-          SliverToBoxAdapter(
-            child: HomeBreif(
-              role: role,
+            child: Column(
+              children: [
+                HomeHeader(),
+              ],
             ),
           ),
-          if (role == 'admin')
+          SliverToBoxAdapter(
+            child: HomeBreif(role: role),
+          ),
+          if (role == 'father' || role == 'mother')
             SliverToBoxAdapter(
-              child: AdminSpecificWidget(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.family_restroom),
+                  label: const Text('إدارة العائلة'),
+                  onPressed: () => context.go('/family-setup', extra: {'role': role, 'familyId': familyId}),
+                ),
+              ),
+            ),
+          if (role == 'father')
+            SliverToBoxAdapter(
+              child: AdminSpecificWidget(role: 'father', familyId: familyId),
             ),
           if (role == 'user')
             BlocProvider(

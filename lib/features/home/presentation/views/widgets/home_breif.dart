@@ -24,7 +24,7 @@ class HomeBreif extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            role == 'admin'
+            role == 'father'
                 ? AppStrings.homeAdminBrief
                 : AppStrings.homeUserBrief,
             style: CustomTextStyles.poppins300style16,
@@ -32,7 +32,7 @@ class HomeBreif extends StatelessWidget {
           SizedBox(height: 10.h),
           Flexible(
             child: Text(
-              role == 'admin'
+              role == 'father'
                   ? AppStrings.homeAdminBriefContent
                   : AppStrings.homeUserBriefContent,
               style: TextStyle(color: AppColors.prColor, fontSize: 12.sp),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:IOT_SmartHome/core/widgets/customButton.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminSpecificWidget extends StatelessWidget {
-  const AdminSpecificWidget({super.key});
+  final String role;
+  final String familyId;
+
+  const AdminSpecificWidget({super.key, required this.role, required this.familyId});
 
   @override
   Widget build(BuildContext context) {

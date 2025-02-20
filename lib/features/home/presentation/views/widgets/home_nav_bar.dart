@@ -8,11 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeNavBarWidget extends StatelessWidget {
   final String role;
+  final String familyId;
   final PersistentTabController _controller = PersistentTabController();
 
   PersistentTabController get controller => _controller;
 
-  HomeNavBarWidget({super.key, required this.role});
+  HomeNavBarWidget({super.key, required this.role, required this.familyId});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class HomeNavBarWidget extends StatelessWidget {
           final timeDifference = currentTime - lastPasswordGenerationTime;
 
           if (timeDifference < 20 * 60 * 1000) {
+            if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   content: Text(
@@ -50,8 +52,8 @@ class HomeNavBarWidget extends StatelessWidget {
 
   List<Widget> _buildScreens() {
     return [
-      HomeView(role: role),
-      SettingGeneratePassword(isAdmin: role == 'admin'),
+      HomeView(role: role, familyId: familyId),
+      SettingGeneratePassword(isAdmin: role == 'father'),
     ];
   }
 
