@@ -23,21 +23,21 @@ class HomeBreif extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            role == 'father'
-                ? AppStrings.homeAdminBrief
-                : AppStrings.homeUserBrief,
-            style: CustomTextStyles.poppins300style16,
-          ),
+          // Text(
+          //   role == 'father'
+          //       ? AppStrings.homeAdminBrief
+          //       : AppStrings.homeUserBrief,
+          //   style: CustomTextStyles.poppins300style16,
+          // ),
           SizedBox(height: 10.h),
-          Flexible(
-            child: Text(
-              role == 'father'
-                  ? AppStrings.homeAdminBriefContent
-                  : AppStrings.homeUserBriefContent,
-              style: TextStyle(color: AppColors.prColor, fontSize: 12.sp),
-            ),
-          ),
+          // Flexible(
+          //   child: Text(
+          //     role == 'father'
+          //         ? AppStrings.homeAdminBriefContent
+          //         : AppStrings.homeUserBriefContent,
+          //     style: TextStyle(color: AppColors.prColor, fontSize: 12.sp),
+          //   ),
+          // ),
         ],
       ),
     );

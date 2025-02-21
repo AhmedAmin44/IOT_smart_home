@@ -36,7 +36,7 @@ class UserSavePasswordButton extends StatelessWidget {
 
               if (userDoc.exists) {
                 userName =
-                    '${userDoc.data()?['first_name'] ?? 'Default'} ${userDoc.data()?['last_name'] ?? 'Name'}';
+                    '${userDoc.data()?['firstname'] ?? 'Default'} ${userDoc.data()?['lastname'] ?? 'Name'}';
               }
             } catch (e) {
               print('Error fetching user name from Firestore: $e');

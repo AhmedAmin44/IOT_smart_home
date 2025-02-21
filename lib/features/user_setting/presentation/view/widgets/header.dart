@@ -12,7 +12,7 @@ class Header extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: GradientText(
         textAlign: TextAlign.center,
-        AppStrings.homeHeader,
+        AppStrings.appName,
         style: Theme.of(context)
             .textTheme
             .headlineLarge!

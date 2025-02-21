@@ -14,30 +14,33 @@ class FamilySetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('إدارة العائلة'),
-      ),
-      body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          // Handle states here
-        },
-        builder: (context, state) {
-          return _RoleBasedView(
-            role: role,
-            familyId: familyId,
-          );
-        },
+    return BlocProvider(
+      create: (context) => AuthCubit(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('إدارة العائلة'),
+        ),
+        body: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            // Handle states here
+          },
+          builder: (context, state) {
+            return RoleBasedView(
+              role: role,
+              familyId: familyId,
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _RoleBasedView extends StatelessWidget {
+class RoleBasedView extends StatelessWidget {
   final String role;
   final String familyId;
 
-  const _RoleBasedView({
+  const RoleBasedView({
     required this.role,
     required this.familyId,
   });
@@ -46,11 +49,11 @@ class _RoleBasedView extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (role) {
       case 'father':
-        return _FatherView(familyId: familyId);
+        return FatherView(familyId: familyId);
       case 'mother':
-        return _MotherView(familyId: familyId);
+        return MotherView(familyId: familyId);
       case 'child':
-        return _ChildView(familyId: familyId);
+        return ChildView(familyId: familyId);
       default:
         return const Center(child: Text('صلاحيات غير معروفة'));
     }
@@ -58,20 +61,21 @@ class _RoleBasedView extends StatelessWidget {
 }
 
 // ---------------------- واجهة الأب ----------------------
-class _FatherView extends StatefulWidget {
+class FatherView extends StatefulWidget {
   final String familyId;
 
-  const _FatherView({required this.familyId});
+  const FatherView({required this.familyId});
 
   @override
-  State<_FatherView> createState() => _FatherViewState();
+  State<FatherView> createState() => FatherViewState();
 }
 
-class _FatherViewState extends State<_FatherView> {
-  final _emailController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  String _selectedRole = 'child';
+class FatherViewState extends State<FatherView> {
+  final emailController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final passwordController = TextEditingController(); // Add password controller
+  String selectedRole = 'child';
 
   @override
   Widget build(BuildContext context) {
@@ -79,41 +83,60 @@ class _FatherViewState extends State<_FatherView> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          _FamilyIdCard(familyId: widget.familyId),
+          FamilyIdCard(familyId: widget.familyId),
           const SizedBox(height: 20),
-          _InviteForm(
-            emailController: _emailController,
-            firstNameController: _firstNameController,
-            lastNameController: _lastNameController,
-            selectedRole: _selectedRole,
-            onRoleChanged: (value) => setState(() => _selectedRole = value!),
-            onSendInvite: () => _sendInvite(context),
+          InviteForm(
+            emailController: emailController,
+            firstNameController: firstNameController,
+            lastNameController: lastNameController,
+            passwordController: passwordController, // Pass password controller
+            selectedRole: selectedRole,
+            onRoleChanged: (value) => setState(() => selectedRole = value!),
+            onSendInvite: () => sendInvite(context),
           ),
           const SizedBox(height: 20),
-          const Expanded(child: _FamilyMembersList()),
+          Expanded(child: FamilyMembersList(
+            onRemoveMember: removeMember,
+            onUpdateMember: updateMember,
+          )),
         ],
       ),
     );
   }
 
-  void _sendInvite(BuildContext context) {
-    context.read<AuthCubit>().sendFamilyInvite(
-      email: _emailController.text,
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      role: _selectedRole,
+  void sendInvite(BuildContext context) {
+    context.read<AuthCubit>().addFamilyMember(
+      email: emailController.text,
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      role: selectedRole,
+      password: passwordController.text, // Pass the password
     );
-    _emailController.clear();
-    _firstNameController.clear();
-    _lastNameController.clear();
+    emailController.clear();
+    firstNameController.clear();
+    lastNameController.clear();
+    passwordController.clear(); // Clear the password field
+  }
+
+  void removeMember(BuildContext context, String userId) {
+    context.read<AuthCubit>().removeFamilyMember(userId);
+  }
+
+  void updateMember(BuildContext context, String userId, String firstName, String lastName, String role) {
+    context.read<AuthCubit>().updateFamilyMember(
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      role: role,
+    );
   }
 }
 
 // ---------------------- واجهة الأم ----------------------
-class _MotherView extends StatelessWidget {
+class MotherView extends StatelessWidget {
   final String familyId;
 
-  const _MotherView({required this.familyId});
+  const MotherView({required this.familyId});
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +144,12 @@ class _MotherView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          _FamilyIdCard(familyId: familyId),
+          FamilyIdCard(familyId: familyId),
           const SizedBox(height: 20),
-          const Expanded(child: _FamilyMembersList()),
+          Expanded(child: FamilyMembersList(
+            onRemoveMember: (context, userId) {},
+            onUpdateMember: (context, userId, firstName, lastName, role) {},
+          )),
         ],
       ),
     );
@@ -131,10 +157,10 @@ class _MotherView extends StatelessWidget {
 }
 
 // ---------------------- واجهة الابن ----------------------
-class _ChildView extends StatelessWidget {
+class ChildView extends StatelessWidget {
   final String familyId;
 
-  const _ChildView({required this.familyId});
+  const ChildView({required this.familyId});
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +168,7 @@ class _ChildView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _FamilyIdCard(familyId: familyId),
+          FamilyIdCard(familyId: familyId),
           const SizedBox(height: 20),
           const Text('اتصل بالأب لإجراء أي تعديلات'),
         ],
@@ -152,10 +178,10 @@ class _ChildView extends StatelessWidget {
 }
 
 // ---------------------- مكونات مشتركة ----------------------
-class _FamilyIdCard extends StatelessWidget {
+class FamilyIdCard extends StatelessWidget {
   final String familyId;
 
-  const _FamilyIdCard({required this.familyId});
+  const FamilyIdCard({required this.familyId});
 
   @override
   Widget build(BuildContext context) {
@@ -166,19 +192,21 @@ class _FamilyIdCard extends StatelessWidget {
           children: [
             const Icon(Icons.family_restroom, size: 40),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('رمز العائلة'),
-                SelectableText(
-                  familyId,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('رمز العائلة'),
+                  SelectableText(
+                    familyId,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             ),
             IconButton(
               icon: const Icon(Icons.copy),
-              onPressed: () => _copyToClipboard(context),
+              onPressed: () => copyToClipboard(context),
             ),
           ],
         ),
@@ -186,7 +214,7 @@ class _FamilyIdCard extends StatelessWidget {
     );
   }
 
-  void _copyToClipboard(BuildContext context) {
+  void copyToClipboard(BuildContext context) {
     Clipboard.setData(ClipboardData(text: familyId));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('تم نسخ الرمز')),
@@ -194,18 +222,20 @@ class _FamilyIdCard extends StatelessWidget {
   }
 }
 
-class _InviteForm extends StatelessWidget {
+class InviteForm extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
+  final TextEditingController passwordController; // Add password controller
   final String selectedRole;
   final ValueChanged<String?> onRoleChanged;
   final VoidCallback onSendInvite;
 
-  const _InviteForm({
+  const InviteForm({
     required this.emailController,
     required this.firstNameController,
     required this.lastNameController,
+    required this.passwordController, // Add password controller
     required this.selectedRole,
     required this.onRoleChanged,
     required this.onSendInvite,
@@ -236,6 +266,14 @@ class _InviteForm extends StatelessWidget {
             prefixIcon: Icon(Icons.email),
           ),
         ),
+        TextField(
+          controller: passwordController, // Add password field
+          decoration: const InputDecoration(
+            labelText: 'كلمة المرور',
+            prefixIcon: Icon(Icons.lock),
+          ),
+          obscureText: true,
+        ),
         DropdownButtonFormField<String>(
           value: selectedRole,
           items: const [
@@ -246,15 +284,21 @@ class _InviteForm extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: onSendInvite,
-          child: const Text('إرسال دعوة'),
+          child: const Text('إرسال دعوة'), // This button triggers the addition of a family member
         ),
       ],
     );
   }
 }
 
-class _FamilyMembersList extends StatelessWidget {
-  const _FamilyMembersList();
+class FamilyMembersList extends StatelessWidget {
+  final Function(BuildContext, String) onRemoveMember;
+  final Function(BuildContext, String, String, String, String) onUpdateMember;
+
+  const FamilyMembersList({
+    required this.onRemoveMember,
+    required this.onUpdateMember,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -273,21 +317,81 @@ class _FamilyMembersList extends StatelessWidget {
             return ListTile(
               title: Text(member['email']),
               subtitle: Text(member['role']),
-              trailing: _getRoleBadge(member['role']),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      // Show dialog to update member
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          final firstNameController = TextEditingController(text: member['firstName']);
+                          final lastNameController = TextEditingController(text: member['lastName']);
+                          String selectedRole = member['role'];
+                          return AlertDialog(
+                            title: const Text('تعديل عضو العائلة'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  controller: firstNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'الاسم الأول',
+                                  ),
+                                ),
+                                TextField(
+                                  controller: lastNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'اسم العائلة',
+                                  ),
+                                ),
+                                DropdownButtonFormField<String>(
+                                  value: selectedRole.isNotEmpty ? selectedRole : 'child',
+                                  items: const [
+                                    DropdownMenuItem(value: 'child', child: Text('ابن/ابنة')),
+                                    DropdownMenuItem(value: 'mother', child: Text('أم')),
+                                    DropdownMenuItem(value: 'father', child: Text('أب')), // Ensure 'father' is included
+                                  ],
+                                  onChanged: (value) => selectedRole = value!,
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('إلغاء'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  onUpdateMember(
+                                    context,
+                                    member.id,
+                                    firstNameController.text,
+                                    lastNameController.text,
+                                    selectedRole,
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('تعديل'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => onRemoveMember(context, member.id),
+                  ),
+                ],
+              ),
             );
           },
         );
       },
-    );
-  }
-
-  Widget _getRoleBadge(String role) {
-    final color = role == 'father' ? Colors.blue : 
-                role == 'mother' ? Colors.pink : Colors.green;
-    return Chip(
-      label: Text(role),
-      backgroundColor: color.withOpacity(0.1),
-      labelStyle: TextStyle(color: color),
     );
   }
 }

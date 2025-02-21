@@ -26,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
   String? familyId;
 
   bool obscureVerifyPasswordTextValue = true;
-  bool? termsAndConditionsChekBox = false;
+  bool? termsAndConditionsCheckBox = false;
   bool? obscurePasswordTextValue = true;
   GlobalKey<FormState> signUpFormKey = GlobalKey();
   GlobalKey<FormState> signInFormKey = GlobalKey();
@@ -139,22 +139,36 @@ class AuthCubit extends Cubit<AuthState> {
     required String firstName,
     required String lastName,
     required String role,
+    required String password,
   }) async {
     try {
-      if (this.role != 'father') {
+      if (role != 'father') {
         _emitState(OperationFailureState(errMsg: 'غير مصرح بهذا الإجراء'));
         return;
       }
 
-      await _firestore.collection('family_invites').doc(email).set({
-        'familyId': familyId,
+      // Create user account in Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Record the user in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'firstName': firstName,
         'lastName': lastName,
+        'email': email,
         'role': role,
+        'familyId': familyId,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
+      // Log the invite details
+      print('User account created and recorded in Firestore for $email');
+
       _emitState(InviteSentSuccessState());
+    } on FirebaseAuthException catch (e) {
+      _emitState(OperationFailureState(errMsg: e.message ?? 'Failed to create user account'));
     } catch (e) {
       _emitState(OperationFailureState(errMsg: e.toString()));
     }
@@ -375,9 +389,9 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void updateTermsAndConditionsChekBox({newValue}) {
-    termsAndConditionsChekBox = newValue;
-    _emitState(TermsAndConditionsChekBoxState());
+  void updateTermsAndConditionsCheckBox({newValue}) {
+    termsAndConditionsCheckBox = newValue;
+    _emitState(TermsAndConditionsCheckBoxState());
   }
 
   void obscurePasswordText() {
@@ -387,6 +401,104 @@ class AuthCubit extends Cubit<AuthState> {
       obscurePasswordTextValue = true;
     }
     _emitState(ObscurePasswordTextUpdateState());
+  }
+
+  Future<void> addFamilyMember({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String role,
+    required String password,
+  }) async {
+    try {
+      if (this.role != 'father') {
+        _emitState(OperationFailureState(errMsg: 'غير مصرح بهذا الإجراء'));
+        return;
+      }
+
+      // Create user account in Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Log user creation
+      print('User account created for $email');
+
+      // Ensure familyId is set
+      if (familyId == null) {
+        familyId = await _firestore.collection('families').add({
+          'fatherId': _auth.currentUser!.uid,
+          'createdAt': FieldValue.serverTimestamp(),
+        }).then((doc) => doc.id);
+      }
+
+      // Record the user in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'role': role,
+        'familyId': familyId,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Log Firestore record creation
+      print('User record created in Firestore for $email');
+
+      _emitState(InviteSentSuccessState());
+    } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException: ${e.message}');
+      _emitState(OperationFailureState(errMsg: e.message ?? 'Failed to create user account'));
+    } catch (e) {
+      print('Exception: $e');
+      _emitState(OperationFailureState(errMsg: e.toString()));
+    }
+  }
+
+  Future<void> removeFamilyMember(String userId) async {
+    try {
+      if (this.role != 'father') {
+        _emitState(OperationFailureState(errMsg: 'غير مصرح بهذا الإجراء'));
+        return;
+      }
+
+      // Remove user from Firestore
+      await _firestore.collection('users').doc(userId).delete();
+
+      // Remove user from Firebase Authentication
+      User? user = await _auth.currentUser;
+      await user?.delete();
+
+      _emitState(OperationSuccessState());
+    } catch (e) {
+      _emitState(OperationFailureState(errMsg: e.toString()));
+    }
+  }
+
+  Future<void> updateFamilyMember({
+    required String userId,
+    required String firstName,
+    required String lastName,
+    required String role,
+  }) async {
+    try {
+      if (this.role != 'father') {
+        _emitState(OperationFailureState(errMsg: 'غير مصرح بهذا الإجراء'));
+        return;
+      }
+
+      // Update user in Firestore
+      await _firestore.collection('users').doc(userId).update({
+        'firstName': firstName,
+        'lastName': lastName,
+        'role': role,
+      });
+
+      _emitState(OperationSuccessState());
+    } catch (e) {
+      _emitState(OperationFailureState(errMsg: e.toString()));
+    }
   }
 }
 

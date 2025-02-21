@@ -49,7 +49,7 @@ class HomeHeader extends StatelessWidget {
 
     if (!userDoc.exists) return 'User';
 
-    return userDoc.data()?['first_name'] ?? 'User';
+    return userDoc.data()?['firstname'] ?? 'User';
   }
 
   Widget welcomeHeader(String userName) {

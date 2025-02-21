@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
+import 'package:flutter/material.dart';
 
 class CustomBotton extends StatelessWidget {
   const CustomBotton(
-      {super.key, this.color, required this.text, required this.onPressed});
+      {Key? key, this.color, required this.text, required this.onPressed})
+      : super(key: key);
   final Color? color;
   final String text;
   final VoidCallback onPressed;
@@ -16,7 +17,7 @@ class CustomBotton extends StatelessWidget {
       child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-              backgroundColor: color ?? AppColors.secColor,
+              backgroundColor: color ?? AppColors.prColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10))),
           child: Text(

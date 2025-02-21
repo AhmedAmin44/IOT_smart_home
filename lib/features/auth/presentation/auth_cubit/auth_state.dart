@@ -1,57 +1,30 @@
-class AuthState {}
+abstract class AuthState {}
 
-final class AuthInitial extends AuthState {}
-
-final class SignUpLoadingState extends AuthState {}
-
-final class SignUpSuccessState extends AuthState {}
-
-final class SignUpFailureState extends AuthState {
+class AuthInitial extends AuthState {}
+class SignUpLoadingState extends AuthState {}
+class SignUpSuccessState extends AuthState {}
+class SignUpFailureState extends AuthState {
   final String errmsg;
   SignUpFailureState({required this.errmsg});
 }
-final class PhoneVerificationSuccessState extends AuthState {}
-final class OTPCodeSentState extends AuthState {}
-final class PhoneVerificationFailureState extends AuthState {
-    final String errmsg;
-
-  PhoneVerificationFailureState({required this.errmsg});
-
+class SignInLoadingState extends AuthState {}
+class SignInFailureState extends AuthState {
+  final String errMsg;
+  SignInFailureState({required this.errMsg});
 }
-
-
-final class SignInLoadingState extends AuthState {}
-
-final class SignInSuccessState extends AuthState {
+class SignInSuccessState extends AuthState {
   final String role;
   final String familyId;
   SignInSuccessState({required this.role, required this.familyId});
 }
-final class SignInFailureState extends AuthState{
-  final String errMsg;
-  SignInFailureState({required this.errMsg});
-}final class ResetPasswordLoadingState extends AuthState {}
-
-final class ResetPasswordSuccessState extends AuthState {}
-final class ResetPasswordFailureState extends AuthState{
-  final String errMsg;
-  ResetPasswordFailureState({required this.errMsg});
-}
-
-final class TermsAndConditionsChekBoxState extends AuthState {}
-
-final class ObscurePasswordTextUpdateState extends AuthState {}
-
-class ParentDashboardState extends AuthState {
-  final String role;
-  ParentDashboardState({required this.role});
-}
-class ChildDashboardState extends AuthState {}
+class PhoneCodeSentState extends AuthState {}
+class PhoneVerificationSuccessState extends AuthState {}
 class InviteSentSuccessState extends AuthState {}
 class OperationFailureState extends AuthState {
   final String errMsg;
   OperationFailureState({required this.errMsg});
 }
+class OperationSuccessState extends AuthState {}
 class OTPGeneratedState extends AuthState {
   final String otp;
   OTPGeneratedState({required this.otp});
@@ -61,4 +34,11 @@ class RequestApprovalFailureState extends AuthState {
   final String errMsg;
   RequestApprovalFailureState({required this.errMsg});
 }
-class PhoneCodeSentState extends AuthState {}
+class ResetPasswordLoadingState extends AuthState {}
+class ResetPasswordSuccessState extends AuthState {}
+class ResetPasswordFailureState extends AuthState {
+  final String errMsg;
+  ResetPasswordFailureState({required this.errMsg});
+}
+class TermsAndConditionsCheckBoxState extends AuthState {}
+class ObscurePasswordTextUpdateState extends AuthState {}

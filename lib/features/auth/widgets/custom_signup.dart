@@ -100,11 +100,11 @@ class CustomSignUpForm extends StatelessWidget {
                       color: AppColors.primaryColor,
                     )
                   : CustomBotton(
-                      color: authCubit.termsAndConditionsChekBox == false
+                      color: authCubit.termsAndConditionsCheckBox == false
                           ? AppColors.grey
                           : null,
                       onPressed: () async {
-                        if (authCubit.termsAndConditionsChekBox!) {
+                        if (authCubit.termsAndConditionsCheckBox!) {
                           if (authCubit.signUpFormKey.currentState!
                               .validate()) {
                             // Check if password and verify password match

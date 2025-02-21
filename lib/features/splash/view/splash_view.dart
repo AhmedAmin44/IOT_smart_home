@@ -1,4 +1,5 @@
 
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,16 +19,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // to get data that are saved from part of onboarding to know if user visit or not
     bool isUserVisited =
         getIt<CacheHelper>().getData(key: "isUserVisited") ?? false;
     if (isUserVisited == true) {
-      // if the user visit it before go direct to SignUp ,and if ha had account go to home directly
       FirebaseAuth.instance.currentUser == null
           ? customDelay(context, "/login")
           : customDelay(context, "/home");
     } else {
-      //if the user not visit it before go to onBoarding First
       customDelay(context, "/login");
     }
     super.initState();
@@ -36,9 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: 
-          Text(AppStrings.appName ,style: CustomTextStyles.saira700style32,),
+       body: Center(
+        child: Text(AppStrings.appName,
+            style: CustomTextStyles.pacifico400style64.copyWith(fontSize: 30,color: AppColors.primaryColor)),
       ),
     );
   }

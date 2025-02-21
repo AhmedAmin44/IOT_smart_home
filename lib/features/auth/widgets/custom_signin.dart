@@ -93,19 +93,23 @@ class CustomSignInForm extends StatelessWidget {
   }
 }
 
+class OTPSentState {
+}
+
 void _navigateBasedOnRole(BuildContext context, String role) {
   context.go("/homeNavBar", extra: role);
 }
-  Future<String> _fetchUserRole() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return 'user';
 
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
+Future<String> _fetchUserRole() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) return 'user';
 
-    if (!userDoc.exists) return 'user';
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .get();
 
-    return userDoc['role'] ?? 'user';
-  }
+  if (!userDoc.exists) return 'user';
+
+  return userDoc['role'] ?? 'user';
+}
