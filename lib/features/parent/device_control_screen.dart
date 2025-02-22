@@ -1,3 +1,7 @@
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/widgets/customButton.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
@@ -28,48 +32,20 @@ appBar: AppBar(
         ),
         centerTitle: true,
         
-      ),      body: Padding(
+      ),  
+          body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Add New Device'),
-                      content: TextField(
-                        controller: newDeviceController,
-                        decoration: const InputDecoration(labelText: 'Device Name'),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              devices.add({
-                                'name': newDeviceController.text,
-                                'status': false,
-                                'lastUsed': 'Never',
-                              });
-                            });
-                            print("Device added: ${newDeviceController.text}");
-                            newDeviceController.clear();
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Add'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Text('Add New Device'),
-            ),
+            CustomBotton(
+  text: "Add New Device !",
+  onPressed: () {
+    showAddDeviceDialog(context);
+  },
+),
+
+           
+           
             const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
@@ -77,27 +53,41 @@ appBar: AppBar(
                 itemBuilder: (context, index) {
                   var device = devices[index];
                   return Card(
+                    color: AppColors.secColor,
                     child: ListTile(
-                      title: Text(device['name']),
-                      subtitle: Text('Status: ${device['status'] ? 'On' : 'Off'} - Last used: ${device['lastUsed']}'),
+                      title: Text(device['name'],
+                      
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green
+                    ),),
+                      subtitle: Text(
+                        'Status: ${device['status'] ? 'On' : 'Off'}\n - Last used: ${device['lastUsed']}',
+                        style: TextStyle(color: Colors.white),
+                        ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Switch(
                             value: device['status'],
+                             activeColor: Colors.green,
+  inactiveTrackColor: Colors.grey,
                             onChanged: (val) {
                               setState(() {
                                 devices[index]['status'] = val;
+                                
                               });
+                              ShowToast("Device ${device['name']} status changed to $val");
                               print("Device ${device['name']} status changed to $val");
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete),
+                            icon: const Icon(Icons.delete,size: 25,color: Colors.red,),
                             onPressed: () {
                               setState(() {
                                 devices.removeAt(index);
                               });
+                              ShowToast("Device deleted: ${device['name']}");
                               print("Device deleted: ${device['name']}");
                             },
                           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
 import '../../auth/presentation/auth_cubit/auth_cubit.dart';
 import '../../auth/presentation/auth_cubit/auth_state.dart';
@@ -19,9 +20,30 @@ class FamilySetupScreen extends StatelessWidget {
       create: (context) =>
           AuthCubit()..initialize(familyId: familyId, role: role),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Family Management'),
+        appBar:AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: () {},
         ),
+        title: const Icon(
+          FontAwesomeIcons.lightbulb,
+          color: Colors.green,
+          size: 28,
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications, color: Colors.white),
+          ),
+        ],
+      ),
+        
+        
+        
+        
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             // Print state changes for debugging

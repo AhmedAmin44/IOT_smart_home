@@ -126,7 +126,7 @@ class HomeContainer extends StatelessWidget {
             children: [
               _buildCard('Add New Device', FontAwesomeIcons.plusCircle, () {
                 if (role == 'father' || role == 'mother') {
-                  _showAddDeviceDialog(context);
+                  showAddDeviceDialog(context);
                 } else {
                   ShowToast("You Can not add any device ,Only Your Parents can");
                 }
@@ -248,14 +248,14 @@ Future<String> getUserName() async {
   return userDoc.data()?['firstName'] ?? 'User';
 }
 
-void _showAddDeviceDialog(BuildContext context) {
+void showAddDeviceDialog(BuildContext context) {
   final TextEditingController typeController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   String? isDanger;
 
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true, // Allows full height adjustment
+    isScrollControlled: true, 
     backgroundColor: Colors.grey.shade900,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -267,7 +267,7 @@ void _showAddDeviceDialog(BuildContext context) {
           right: 16,
           top: 16,
           bottom: MediaQuery.of(context).viewInsets.bottom +
-              16, // Adjust for keyboard
+              16, 
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -363,7 +363,7 @@ void _showAddDeviceDialog(BuildContext context) {
                       Navigator.pop(context);
                     },
                     child: const Text("Save",
-                        style: TextStyle(color: Colors.black)),
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),

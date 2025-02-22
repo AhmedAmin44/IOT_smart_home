@@ -1,3 +1,5 @@
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'otp_display_screen.dart';
@@ -38,39 +40,49 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: devices.length,
-        itemBuilder: (context, index) {
-          var device = devices[index];
-          return ListTile(
-            leading: const Icon(Icons.lightbulb_outline),
-            title: Text(device['name']),
-            subtitle: Text(device['status'] ? 'On' : 'Off'),
-            trailing: isRequesting
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isRequesting = true;
-                      });
-                      print("Requesting access for ${device['name']}");
-                      Future.delayed(const Duration(seconds: 2), () {
-                        setState(() {
-                          isRequesting = false;
-                        });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const OTPDisplayScreen(otpCode: "4D6F"),
+      body: 
+        Expanded(
+              child: ListView.builder(
+                itemCount: devices.length,
+                itemBuilder: (context, index) {
+                  var device = devices[index];
+                  return Card(
+                    color: AppColors.secColor,
+                    child: ListTile(
+                      title: Text(device['name'],
+                      
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green
+                    ),),
+                      subtitle: Text(
+                        'Status: ${device['status'] ? 'On' : 'Off'}\n - Last used: ${device['lastUsed']}',
+                        style: TextStyle(color: Colors.white),
+                        ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Switch(
+                            value: device['status'],
+                             activeColor: Colors.green,
+  inactiveTrackColor: Colors.grey,
+                            onChanged: (val) {
+                              setState(() {
+                                devices[index]['status'] = val;
+                                
+                              });
+                              ShowToast("Device ${device['name']} status changed to $val");
+                              print("Device ${device['name']} status changed to $val");
+                            },
                           ),
-                        );
-                      });
-                    },
-                    child: const Text('Request Access'),
-                  ),
-          );
-        },
-      ),
+                          
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

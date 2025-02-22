@@ -43,7 +43,7 @@ class HomeNavBarWidget extends StatelessWidget {
     if (role == 'father') {
       return [
         HomeView(role: role, familyId: familyId),
-       // FamilySetupScreen(initialFamilyId: familyId),
+      //  FamilySetupScreen(initialFamilyId: familyId),
         const DeviceControlScreen(),
         const DeviceControlScreen(),
         const ParentalDashboard(),
