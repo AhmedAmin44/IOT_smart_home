@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
             useInheritedMediaQuery: true,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            theme: ThemeData(scaffoldBackgroundColor: AppColors.bgColor),
+            theme: ThemeData(scaffoldBackgroundColor:Colors.black),
             debugShowCheckedModeBanner: false,
             routerConfig: router,
           );

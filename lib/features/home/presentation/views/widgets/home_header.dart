@@ -60,7 +60,6 @@ class HomeHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // const PickImageWidget(),
           IconButton(
             icon: Icon(
               Icons.list,
@@ -68,14 +67,6 @@ class HomeHeader extends StatelessWidget {
               size: 25,
             ),
             onPressed: () {},
-          ),
-          Text(
-            AppStrings.appName,
-            style: CustomTextStyles.saira700style32.copyWith(
-              fontSize: 15,
-              fontFamily: "Pacifico",
-              color: const Color.fromARGB(179, 93, 148, 86),
-            ),
           ),
           IconButton(
             icon: Icon(

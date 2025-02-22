@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
 class DeviceControlScreen extends StatefulWidget {
   const DeviceControlScreen({Key? key}) : super(key: key);
@@ -16,8 +17,18 @@ class _DeviceControlScreenState extends State<DeviceControlScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Device Control')),
-      body: Padding(
+appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        
+        title: const Icon(
+          FontAwesomeIcons.lightbulb,
+          color: Colors.green,
+          size: 28,
+        ),
+        centerTitle: true,
+        
+      ),      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
