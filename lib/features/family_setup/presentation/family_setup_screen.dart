@@ -1,3 +1,8 @@
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_string.dart';
+import 'package:IOT_SmartHome/core/widgets/customButton.dart';
+import 'package:IOT_SmartHome/features/auth/widgets/text_form_field.dart';
+import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +16,8 @@ class FamilySetupScreen extends StatelessWidget {
   final String role;
   final String familyId;
 
-  const FamilySetupScreen({Key? key, required this.role, required this.familyId})
+  const FamilySetupScreen(
+      {Key? key, required this.role, required this.familyId})
       : super(key: key);
 
   @override
@@ -20,37 +26,41 @@ class FamilySetupScreen extends StatelessWidget {
       create: (context) =>
           AuthCubit()..initialize(familyId: familyId, role: role),
       child: Scaffold(
-        appBar:AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
-          onPressed: () {},
-        ),
-        title: const Icon(
-          FontAwesomeIcons.lightbulb,
-          color: Colors.green,
-          size: 28,
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications, color: Colors.white),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.backspace_outlined, color: Colors.white),
+            onPressed: () {
+              
+              // HomeNavBarWidget? homeNavBar =
+              //     context.findAncestorWidgetOfExactType<HomeNavBarWidget>();
+
+              // if (homeNavBar != null) {
+              //   homeNavBar.controller.jumpToTab(1);
+              // }
+            },
           ),
-        ],
-      ),
-        
-        
-        
-        
+          title: const Icon(
+            FontAwesomeIcons.lightbulb,
+            color: Colors.green,
+            size: 28,
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.notifications, color: Colors.white),
+            ),
+          ],
+        ),
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             // Print state changes for debugging
             print("AuthState changed: $state");
           },
           builder: (context, state) {
-            return RoleBasedView(role: role, familyId: familyId);
+            return Expanded(child: RoleBasedView(role: role, familyId: familyId));
           },
         ),
       ),
@@ -98,30 +108,32 @@ class FatherViewState extends State<FatherView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          FamilyIdCard(familyId: widget.familyId),
-          const SizedBox(height: 20),
-          InviteForm(
-            emailController: emailController,
-            firstNameController: firstNameController,
-            lastNameController: lastNameController,
-            passwordController: passwordController,
-            selectedRole: selectedRole,
-            onRoleChanged: (value) => setState(() => selectedRole = value!),
-            onSendInvite: () => sendInvite(context),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: FamilyMembersList(
-              familyId: widget.familyId,
-              onRemoveMember: removeMember,
-              onUpdateMember: updateMember,
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            FamilyIdCard(familyId: widget.familyId),
+            const SizedBox(height: 20),
+            InviteForm(
+              emailController: emailController,
+              firstNameController: firstNameController,
+              lastNameController: lastNameController,
+              passwordController: passwordController,
+              selectedRole: selectedRole,
+              onRoleChanged: (value) => setState(() => selectedRole = value!),
+              onSendInvite: () => sendInvite(context),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            Expanded(
+              child: FamilyMembersList(
+                familyId: widget.familyId,
+                onRemoveMember: removeMember,
+                onUpdateMember: updateMember,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -198,7 +210,10 @@ class ChildView extends StatelessWidget {
         children: [
           FamilyIdCard(familyId: familyId),
           const SizedBox(height: 20),
-          const Text('Contact your father for any changes'),
+          const Text('Contact your father for any changes',
+          style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.green),
+          ),
         ],
       ),
     );
@@ -213,26 +228,36 @@ class FamilyIdCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.secColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            const Icon(Icons.family_restroom, size: 40),
+            Icon(
+              Icons.family_restroom,
+              size: 40,
+              color: AppColors.offWhite,
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Family ID'),
+                  const Text(
+                    'Family ID',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.green),
+                  ),
                   SelectableText(
                     familyId,
-                    style: const TextStyle(fontSize: 18),
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal, color: Colors.white),
                   ),
                 ],
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.copy),
+              icon: const Icon(Icons.copy,color: Colors.white,size:25 ,),
               onPressed: () => copyToClipboard(context),
             ),
           ],
@@ -257,7 +282,7 @@ class InviteForm extends StatelessWidget {
   final ValueChanged<String?> onRoleChanged;
   final VoidCallback onSendInvite;
 
-  const InviteForm({
+   InviteForm({
     Key? key,
     required this.emailController,
     required this.firstNameController,
@@ -266,55 +291,75 @@ class InviteForm extends StatelessWidget {
     required this.selectedRole,
     required this.onRoleChanged,
     required this.onSendInvite,
+
   }) : super(key: key);
+      GlobalKey<FormState> sendInviteFormKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: firstNameController,
-          decoration: const InputDecoration(
-            labelText: 'First Name',
-            prefixIcon: Icon(Icons.person),
-          ),
-        ),
-        TextField(
-          controller: lastNameController,
-          decoration: const InputDecoration(
-            labelText: 'Last Name',
-            prefixIcon: Icon(Icons.person),
-          ),
-        ),
-        TextField(
-          controller: emailController,
-          decoration: const InputDecoration(
-            labelText: 'Email',
-            prefixIcon: Icon(Icons.email),
-          ),
-        ),
-        TextField(
-          controller: passwordController,
-          decoration: const InputDecoration(
-            labelText: 'Password',
-            prefixIcon: Icon(Icons.lock),
-          ),
-          obscureText: true,
-        ),
-        DropdownButtonFormField<String>(
-          value: selectedRole,
-          items: const [
-            DropdownMenuItem(value: 'child', child: Text('Child')),
-            DropdownMenuItem(value: 'mother', child: Text('Mother')),
-          ],
-          onChanged: onRoleChanged,
-        ),
-        ElevatedButton(
-          onPressed: onSendInvite,
-          child: const Text('Send Invite'),
-        ),
-      ],
-    );
+    return Form(
+  key: sendInviteFormKey, 
+  child: Column(
+    children: [
+      TextFField(
+        labelText: 'First Name',
+        onChanged: (value) => firstNameController.text = value,
+      ),
+      TextFField(
+        labelText: 'Last Name',
+        onChanged: (value) => lastNameController.text = value,
+      ),
+      TextFField(
+        labelText: 'Email',
+        onChanged: (value) => emailController.text = value,
+        suffixIcon: const Icon(Icons.email, color: Colors.white),
+      ),
+      TextFField(
+        labelText: 'Password',
+        onChanged: (value) => passwordController.text = value,
+        obscureText: true,
+        suffixIcon: const Icon(Icons.lock, color: Colors.white),
+      ),
+      Padding(
+  padding: const EdgeInsets.only(top: 24, right: 8, left: 8),
+  child: DropdownButtonFormField<String>(
+    value: selectedRole ?? 'child', // Ensure selectedRole is not null
+    dropdownColor: AppColors.darkGrey, // Background color of the dropdown
+    style: TextStyle(color: AppColors.offWhite), // Text color inside the dropdown
+    decoration: InputDecoration(
+      labelText: 'Select Role', // Ensure label is visible
+      labelStyle: TextStyle(color: Colors.white),
+      hintText: 'Choose a role', // Ensures visibility before selection
+      hintStyle: TextStyle(color: Colors.white54),
+      border: getBordrStyle(),
+      enabledBorder: getBordrStyle(),
+      focusedBorder: getBordrStyle(),
+    ),
+    items: [
+      DropdownMenuItem(
+        value: 'child',
+        child: Text('Child', style: TextStyle(color: Colors.white)),
+      ),
+      DropdownMenuItem(
+        value: 'mother',
+        child: Text('Mother', style: TextStyle(color: Colors.white)),
+      ),
+    ],
+    onChanged: (String? newValue) {
+      if (newValue != null) {
+        onRoleChanged(newValue); // Update state
+      }
+    },
+  ),
+),
+
+
+      const SizedBox(height: 25),
+      CustomBotton(text: 'Send Invite', onPressed: onSendInvite),
+    ],
+  ),
+);
+
   }
 }
 
@@ -339,102 +384,113 @@ class FamilyMembersList extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          print("Step: No family members data available yet.");
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
-        print("Step: Family members data received.");
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (context, index) {
-            final member = snapshot.data!.docs[index];
-            return ListTile(
-              title: Text(member['email']),
-              subtitle: Text(member['role']),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          final firstNameController =
-                              TextEditingController(text: member['firstName']);
-                          final lastNameController =
-                              TextEditingController(text: member['lastName']);
-                          String selectedRole = member['role'];
-                          return AlertDialog(
-                            title: const Text('Update Family Member'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: firstNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'First Name',
-                                  ),
-                                ),
-                                TextField(
-                                  controller: lastNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Last Name',
-                                  ),
-                                ),
-                                DropdownButtonFormField<String>(
-                                  value: selectedRole.isNotEmpty
-                                      ? selectedRole
-                                      : 'child',
-                                  items: const [
-                                    DropdownMenuItem(
-                                        value: 'child', child: Text('Child')),
-                                    DropdownMenuItem(
-                                        value: 'mother', child: Text('Mother')),
-                                    DropdownMenuItem(
-                                        value: 'father', child: Text('Father')),
+        
+        return Expanded(
+          child: ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              final member = snapshot.data!.docs[index];
+
+              return Card(
+                color: AppColors.secColor,
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: ListTile(
+                  title: Text(
+                    member['email'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Role: ${member['role']}\nID: ${member.id}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              final firstNameController =
+                                  TextEditingController(text: member['firstName']);
+                              final lastNameController =
+                                  TextEditingController(text: member['lastName']);
+                              String selectedRole = member['role'];
+
+                              return AlertDialog(
+                                title: const Text('Update Family Member'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: firstNameController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'First Name',
+                                      ),
+                                    ),
+                                    TextField(
+                                      controller: lastNameController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Last Name',
+                                      ),
+                                    ),
+                                    DropdownButtonFormField<String>(
+                                      value: selectedRole.isNotEmpty ? selectedRole : 'child',
+                                      items: const [
+                                        DropdownMenuItem(value: 'child', child: Text('Child')),
+                                        DropdownMenuItem(value: 'mother', child: Text('Mother')),
+                                        DropdownMenuItem(value: 'father', child: Text('Father')),
+                                      ],
+                                      onChanged: (value) => selectedRole = value!,
+                                    ),
                                   ],
-                                  onChanged: (value) =>
-                                      selectedRole = value!,
                                 ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  print("Step: Updating member ${member.id}");
-                                  onUpdateMember(
-                                    context,
-                                    member.id,
-                                    firstNameController.text,
-                                    lastNameController.text,
-                                    selectedRole,
-                                  );
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Update'),
-                              ),
-                            ],
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      onUpdateMember(
+                                        context,
+                                        member.id,
+                                        firstNameController.text,
+                                        lastNameController.text,
+                                        selectedRole,
+                                      );
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Update'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
-                      );
-                    },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => onRemoveMember(context, member.id),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => onRemoveMember(context, member.id),
-                  ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
 }
+
