@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class RequestHistoryScreen extends StatefulWidget {
   const RequestHistoryScreen({Key? key}) : super(key: key);
+
   @override
   _RequestHistoryScreenState createState() => _RequestHistoryScreenState();
 }
@@ -29,8 +30,7 @@ class _RequestHistoryScreenState extends State<RequestHistoryScreen> {
         child: Column(
           children: [
             TextField(
-              decoration:
-                  const InputDecoration(labelText: 'Filter', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Filter', border: OutlineInputBorder()),
               onChanged: (value) {
                 setState(() {
                   filter = value;

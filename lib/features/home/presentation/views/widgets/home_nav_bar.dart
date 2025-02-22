@@ -45,19 +45,19 @@ class HomeNavBarWidget extends StatelessWidget {
         HomeView(role: role, familyId: familyId),
         FamilySetupScreen(role: role, familyId: familyId),
        // const DeviceControlScreen(),
-        const DeviceControlScreen(),
-        const ParentalDashboard(),
+        DeviceControlScreen(role: role, familyId: familyId),
+        ParentalDashboard(familyId: familyId),
       ];
     } else if (role == 'mother') {
       return [
         HomeView(role: role, familyId: familyId),
         const OTPApprovalScreen(),
-        const ParentalDashboard(),
+        ParentalDashboard(familyId: familyId),
       ];
     } else if (role == 'child') {
       return [
         HomeView(role: role, familyId: familyId),
-        const DeviceListScreen(),
+        DeviceListScreen(role: role, familyId: familyId),
       ];
     } else {
       return [HomeView(role: role, familyId: familyId)];

@@ -57,23 +57,9 @@ class AuthCubit extends Cubit<AuthState> {
     if (!isClosed) emit(state);
   }
 
-Future<void> addDevice(String name, bool isDangerous) async {
-  try {
-    await _firestore.collection('devices').add({
-      'name': name,
-      'status': false,
-      'isDangerous': isDangerous,
-      'familyId': familyId,
-      'lastUsed': FieldValue.serverTimestamp(),
-    });
-  } catch (e) {
-  }
-}
-
   Future<void> signUpWithEmailAndPassword() async {
     try {
       _emitState(SignUpLoadingState());
-      final isFirstUser = await _isFirstUser();
 
       if (firstName == null ||
           lastName == null ||
@@ -84,13 +70,9 @@ Future<void> addDevice(String name, bool isDangerous) async {
         return;
       }
 
-      if (isFirstUser) {
         role = 'father';
         familyId = const Uuid().v4();
-      } else {
-        _emitState(SignUpFailureState(errmsg: 'Registration allowed only for family head'));
-        return;
-      }
+    
 
       final credential = await _auth.createUserWithEmailAndPassword(
         email: emailAddress!,
@@ -349,11 +331,12 @@ Future<void> sendFamilyInvite({
 
   Future<void> addUserProfile(String uid) async {
     await _firestore.collection("users").doc(uid).set({
-      "first_name": firstName,
-      "last_name": lastName,
+      "firstname": firstName,
+      "lastname": lastName,
       "email": emailAddress,
       "phone": phone,
-      "role": "user",
+      "familyId":familyId,
+      "role": "father",
     });
   }
 

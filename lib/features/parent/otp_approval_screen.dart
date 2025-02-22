@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class OTPApprovalScreen extends StatefulWidget {
   const OTPApprovalScreen({Key? key}) : super(key: key);
+
   @override
   _OTPApprovalScreenState createState() => _OTPApprovalScreenState();
 }
