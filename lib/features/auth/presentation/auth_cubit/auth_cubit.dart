@@ -57,6 +57,19 @@ class AuthCubit extends Cubit<AuthState> {
     if (!isClosed) emit(state);
   }
 
+Future<void> addDevice(String name, bool isDangerous) async {
+  try {
+    await _firestore.collection('devices').add({
+      'name': name,
+      'status': false,
+      'isDangerous': isDangerous,
+      'familyId': familyId,
+      'lastUsed': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+  }
+}
+
   Future<void> signUpWithEmailAndPassword() async {
     try {
       _emitState(SignUpLoadingState());

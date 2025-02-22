@@ -32,13 +32,13 @@ class FamilySetupScreen extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.backspace_outlined, color: Colors.white),
             onPressed: () {
-              
-              // HomeNavBarWidget? homeNavBar =
-              //     context.findAncestorWidgetOfExactType<HomeNavBarWidget>();
 
-              // if (homeNavBar != null) {
-              //   homeNavBar.controller.jumpToTab(1);
-              // }
+              HomeNavBarWidget? homeNavBar =
+                  context.findAncestorWidgetOfExactType<HomeNavBarWidget>();
+
+              if (homeNavBar != null) {
+                homeNavBar.controller.jumpToTab(1);
+              }
             },
           ),
           title: const Icon(

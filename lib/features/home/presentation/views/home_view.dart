@@ -53,15 +53,15 @@ class HomeView extends StatelessWidget {
                   children: [
                       HomeContainer(
               role: 'father',
-            ), Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: CustomBotton(
-                  text: 'Manage Family',
-                  onPressed: () => context.go('/family-setup',
-                      extra: {'role': role, 'familyId': familyId}),
-                  color: AppColors.prColor,
-                )),
-                  ],
+            // ), Padding(
+            //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+            //     child: CustomBotton(
+            //       text: 'Manage Family',
+            //       onPressed: () => context.go('/family-setup',
+            //           extra: {'role': role, 'familyId': familyId}),
+            //       color: AppColors.prColor,
+            //     )),
+                )],
                 ),),
           if (role == 'child')
             SliverToBoxAdapter(
