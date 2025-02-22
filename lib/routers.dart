@@ -12,7 +12,7 @@ import 'package:IOT_SmartHome/features/splash/view/splash_view.dart';
 import 'package:IOT_SmartHome/features/user_setting/presentation/view/user_setting.dart';
 
 import 'features/home/presentation/views/home_view.dart';
-import 'features/user_setting/presentation/view/FamilySetupScreen.dart';
+import 'features/family_setup/presentation/family_setup_screen.dart';
 
 final GoRouter router = GoRouter(routes: [
   GoRoute(

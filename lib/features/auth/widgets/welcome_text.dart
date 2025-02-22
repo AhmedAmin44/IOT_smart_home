@@ -9,7 +9,7 @@ class WelcomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      child: Text(text,
+      child: Text("${text} \n",
           style: CustomTextStyles.poppins600style28
               .copyWith(color: const Color.fromARGB(255, 212, 206, 206))),
     );

@@ -8,8 +8,7 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
-     XFile? profilePic;
-
+  XFile? profilePic;
 
   /// 🔹 Fetch last generated password from Firestore
   Future<void> fetchLastPassword() async {
@@ -32,6 +31,23 @@ class HomeCubit extends Cubit<HomeState> {
       emit(LastPasswordError("No password found"));
     }
   }
+
+  /// 🔹 Fetch FirstName from Firestore
+
+  Future<String> getUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return 'User';
+
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) return 'User';
+
+    return userDoc.data()?['firstName'] ?? 'User';
+  }
+
   Future<void> pickAndUploadProfilePic() async {
     try {
       final ImagePicker picker = ImagePicker();

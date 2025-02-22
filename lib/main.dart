@@ -11,11 +11,9 @@ import 'package:screenutil_module/main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Firebase only if it's not already initialized
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
-      // name: 'passwordGen',
+      // name: 'IOT_SmartHome',
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }

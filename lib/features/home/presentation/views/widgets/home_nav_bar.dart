@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:IOT_SmartHome/core/utils/app_colors.dart';
-import 'package:IOT_SmartHome/core/utils/app_images.dart';
-import 'package:IOT_SmartHome/features/home/presentation/views/home_view.dart';
-import 'package:IOT_SmartHome/features/user_setting/presentation/view/user_setting.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
+import 'package:IOT_SmartHome/core/utils/app_images.dart';
 
+import '../../../../device/device_list_screen.dart';
+import '../../../../family_setup/presentation/family_setup_screen.dart';
+import '../../../../parent/device_control_screen.dart';
+import '../../../../parent/otp_approval_screen.dart';
+import '../../../../parent/parental_dashboard.dart';
+import '../home_view.dart';
+
+// Import screens from your features folders:
 class HomeNavBarWidget extends StatelessWidget {
   final String role;
   final String familyId;
   final PersistentTabController _controller = PersistentTabController();
-
   PersistentTabController get controller => _controller;
 
-  HomeNavBarWidget({super.key, required this.role, required this.familyId});
+  HomeNavBarWidget({Key? key, required this.role, required this.familyId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,56 +29,124 @@ class HomeNavBarWidget extends StatelessWidget {
       items: _navBarItems(),
       controller: _controller,
       navBarStyle: NavBarStyle.style7,
-      backgroundColor: const Color.fromARGB(255, 73, 89, 97),
+      backgroundColor:AppColors.prColor,
       decoration: NavBarDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(7), topRight: Radius.circular(5))),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(7), topRight: Radius.circular(5)),
+      ),
       onItemSelected: (index) async {
-        if (index == 1 && role != 'admin') {
-          final prefs = await SharedPreferences.getInstance();
-          final lastPasswordGenerationTime =
-              prefs.getInt('lastPasswordGenerationTime') ?? 0;
-          final currentTime = DateTime.now().millisecondsSinceEpoch;
-          final timeDifference = currentTime - lastPasswordGenerationTime;
-
-          if (timeDifference < 20 * 60 * 1000) {
-            if (!context.mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(
-                      'You can generate a new password after 20 minutes.')),
-            );
-            return;
-          }
-        }
         _controller.jumpToTab(index);
       },
     );
   }
 
   List<Widget> _buildScreens() {
-    return [
-      HomeView(role: role, familyId: familyId),
-      SettingGeneratePassword(isAdmin: role == 'father'),
-    ];
+    if (role == 'father') {
+      return [
+        HomeView(role: role, familyId: familyId),
+       // FamilySetupScreen(initialFamilyId: familyId),
+        const DeviceControlScreen(),
+        const DeviceControlScreen(),
+        const ParentalDashboard(),
+      ];
+    } else if (role == 'mother') {
+      return [
+        HomeView(role: role, familyId: familyId),
+        const OTPApprovalScreen(),
+        const ParentalDashboard(),
+      ];
+    } else if (role == 'child') {
+      return [
+        HomeView(role: role, familyId: familyId),
+        const DeviceListScreen(),
+      ];
+    } else {
+      return [HomeView(role: role, familyId: familyId)];
+    }
   }
 
   List<PersistentBottomNavBarItem> _navBarItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: Image.asset(AppImages.home),
-        title: ("Home"),
-        activeColorSecondary: AppColors.lightGrey,
-        activeColorPrimary: const Color.fromARGB(31, 223, 219, 219),
-        inactiveIcon: Image.asset(AppImages.home_inactive),
-      ),
-      PersistentBottomNavBarItem(
-        icon: Image.asset(AppImages.setting),
-        title: ("Setting"),
-        activeColorPrimary: const Color.fromARGB(31, 255, 255, 255),
-        activeColorSecondary: AppColors.lightGrey,
-        inactiveIcon: Image.asset(AppImages.setting_inactive),
-      ),
-    ];
+    if (role == 'father') {
+      return [
+        PersistentBottomNavBarItem(
+          icon: Image.asset(AppImages.home),
+          title: "Home",
+          activeColorSecondary: Colors.white,
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          inactiveIcon: Image.asset(AppImages.home_inactive),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.family_restroom),
+          title: "Family Setup",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.family_restroom_outlined),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.devices),
+          title: "Device Control",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.devices_outlined),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.dashboard),
+          title: "Dashboard",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.dashboard_outlined),
+        ),
+      ];
+    } else if (role == 'mother') {
+      return [
+        PersistentBottomNavBarItem(
+          icon: Image.asset(AppImages.home),
+          title: "Home",
+          activeColorSecondary: Colors.white,
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          inactiveIcon: Image.asset(AppImages.home_inactive),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.verified),
+          title: "OTP Approval",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: AppColors.lightGrey,
+          inactiveIcon: const Icon(Icons.verified_outlined),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.dashboard),
+          title: "Dashboard",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.dashboard_outlined),
+        ),
+      ];
+    } else if (role == 'child') {
+      return [
+        PersistentBottomNavBarItem(
+          icon: Image.asset(AppImages.home),
+          title: "Home",
+          activeColorSecondary: Colors.white,
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          inactiveIcon: Image.asset(AppImages.home_inactive),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.devices),
+          title: "Devices",
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.devices_outlined),
+        ),
+      ];
+    } else {
+      return [
+        PersistentBottomNavBarItem(
+          icon: Image.asset(AppImages.home),
+          title: "Home",
+          activeColorSecondary:Colors.white,
+          activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
+          inactiveIcon: Image.asset(AppImages.home_inactive),
+        ),
+      ];
+    }
   }
 }
