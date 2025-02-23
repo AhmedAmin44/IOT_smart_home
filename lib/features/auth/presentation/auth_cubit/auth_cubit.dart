@@ -20,6 +20,8 @@ class AuthCubit extends Cubit<AuthState> {
   String verificationId = '';
   String? otpCode;
   String? verifyPassword;
+
+  //// 
   String? role;
   String? familyId;
   void initialize({required String familyId, required String role}) {
@@ -37,7 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   OtpCubit otpCubit = OtpCubit();
-
+//Auth Cubit 
   // Checks if there is no father account yet
   Future<bool> _isFirstUser() async {
     final result = await _firestore
@@ -146,12 +148,10 @@ Future<void> sendFamilyInvite({
       _emitState(OperationFailureState(errMsg: 'Unauthorized action'));
       return;
     }
-    // Create the new user in Firebase Authentication
     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    // Save new user data in Firestore with the existing familyId
     await _firestore.collection('users').doc(userCredential.user!.uid).set({
       'firstName': firstName,
       'lastName': lastName,

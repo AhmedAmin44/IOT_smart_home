@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
-import '../../core/function/custom_troast.dart';
-import '../../core/widgets/customButton.dart';
-import '../auth/presentation/auth_cubit/auth_cubit.dart';
+import '../../../../core/function/custom_troast.dart';
+import '../../../../core/widgets/customButton.dart';
+import '../../../auth/presentation/auth_cubit/auth_cubit.dart';
 
 class DeviceControlScreen extends StatefulWidget {
   final String role;
