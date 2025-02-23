@@ -1,4 +1,6 @@
+import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
@@ -29,9 +31,10 @@ class HomeNavBarWidget extends StatelessWidget {
       items: _navBarItems(),
       controller: _controller,
       navBarStyle: NavBarStyle.style7,
-      backgroundColor:AppColors.prColor,
+      backgroundColor: AppColors.prColor,
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(7), topRight: Radius.circular(5)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(7), topRight: Radius.circular(5)),
       ),
       onItemSelected: (index) async {
         _controller.jumpToTab(index);
@@ -44,8 +47,11 @@ class HomeNavBarWidget extends StatelessWidget {
       return [
         HomeView(role: role, familyId: familyId),
         FamilySetupScreen(role: role, familyId: familyId),
-       // const DeviceControlScreen(),
-        DeviceControlScreen(role: role, familyId: familyId),
+        // const DeviceControlScreen(),
+        BlocProvider(
+          create: (context) => ParentCubit()..initialize(familyId: familyId),
+          child: DeviceControlScreen(role: role, familyId: familyId),
+        ),
         ParentalDashboard(familyId: familyId),
       ];
     } else if (role == 'mother') {
@@ -142,7 +148,7 @@ class HomeNavBarWidget extends StatelessWidget {
         PersistentBottomNavBarItem(
           icon: Image.asset(AppImages.home),
           title: "Home",
-          activeColorSecondary:Colors.white,
+          activeColorSecondary: Colors.white,
           activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
           inactiveIcon: Image.asset(AppImages.home_inactive),
         ),

@@ -1,6 +1,12 @@
-part of 'parent_cubit.dart';
+abstract class ParentState {}
 
-@immutable
-sealed class ParentState {}
+class ParentInitial extends ParentState {}
 
-final class ParentInitial extends ParentState {}
+class ParentLoaded extends ParentState {
+  final String familyId;
+  ParentLoaded({required this.familyId});
+}
+
+class DeviceAddedSuccess extends ParentState {}
+
+class DeviceAddedFailure extends ParentState {}
