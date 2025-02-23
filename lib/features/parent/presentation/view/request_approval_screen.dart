@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:flutter/material.dart';
 
 class OTPApprovalScreen extends StatefulWidget {
@@ -8,7 +9,7 @@ class OTPApprovalScreen extends StatefulWidget {
 }
 
 class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
-  final TextEditingController otpController = TextEditingController();
+  final TextEditingController requestController = TextEditingController();
   List<Map<String, String>> pendingRequests = [
     {'child': 'Child1', 'device': 'Living Room Light'},
     {'child': 'Child2', 'device': 'AC'},
@@ -23,7 +24,7 @@ class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
         child: Column(
           children: [
             TextField(
-              controller: otpController,
+              controller: requestController,
               decoration: const InputDecoration(
                 labelText: 'Enter OTP',
                 border: OutlineInputBorder(),
@@ -34,9 +35,11 @@ class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: () {
-                      print("OTP Approved: ${otpController.text}");
+                      ShowToast("The Request Approved: ${requestController.text}");
+                      print("The Request Approved: ${requestController.text}");
                     },
                     child: const Text('Approve'),
                   ),
@@ -44,9 +47,13 @@ class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () {
-                      print("OTP Rejected: ${otpController.text}");
+                      ShowToast(
+                          "The Request  Rejected: ${requestController.text}");
+
+                      print("The Request  Rejected: ${requestController.text}");
                     },
                     child: const Text('Reject'),
                   ),

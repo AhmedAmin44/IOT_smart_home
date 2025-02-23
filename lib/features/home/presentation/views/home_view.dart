@@ -70,10 +70,7 @@ class HomeView extends StatelessWidget {
               ),
             ),
 
-          // if (role == 'father')
-          //   SliverToBoxAdapter(
-          //     child: AdminSpecificWidget(role: 'father', familyId: familyId),
-          //   ),
+          
         ],
       ),
     );

@@ -9,7 +9,7 @@ import 'package:IOT_SmartHome/core/utils/app_images.dart';
 import '../../../../device/device_list_screen.dart';
 import '../../../../family_setup/presentation/family_setup_screen.dart';
 import '../../../../parent/presentation/view/device_control_screen.dart';
-import '../../../../parent/presentation/view/otp_approval_screen.dart';
+import '../../../../parent/presentation/view/request_approval_screen.dart';
 import '../../../../parent/presentation/view/parental_dashboard.dart';
 import '../home_view.dart';
 

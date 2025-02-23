@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
@@ -27,7 +28,9 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
+              color: AppColors.secColor,
+
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.only(
