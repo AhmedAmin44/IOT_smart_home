@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp.router(
+            // ignore: deprecated_member_use
             useInheritedMediaQuery: true,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,

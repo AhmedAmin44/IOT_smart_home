@@ -19,7 +19,7 @@ class DeviceCard extends StatelessWidget {
         child: ListTile(
           title: Text(
 
-            ////handel the type here 
+            ////handel the type here  ---------> with (cubit) 
             device['name'],
             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
           ),
@@ -34,6 +34,8 @@ class DeviceCard extends StatelessWidget {
             children: [
               if (isDangerous && cubit.role == 'child')
                 IconButton(
+
+                  /// and icon here    ---------> with (cubit) 
                   icon: const Icon(Icons.lock, color: Colors.red),
                   onPressed: () => cubit.requestOTP(context, device['id'], device['name']),
                 ),

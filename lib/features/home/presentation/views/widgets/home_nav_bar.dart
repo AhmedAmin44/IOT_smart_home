@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_images.dart';
 
-import '../../../../device/device_list_screen.dart';
+import '../../../../device/presentation/views/device_list_screen.dart';
 import '../../../../family_setup/presentation/views/family_setup_screen.dart';
 import '../../../../parent/presentation/view/device_control_screen.dart';
 import '../../../../parent/presentation/view/request_approval_screen.dart';

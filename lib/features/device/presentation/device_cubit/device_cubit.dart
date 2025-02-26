@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:IOT_SmartHome/core/function/custom_troast.dart';
-import 'package:IOT_SmartHome/features/device/otp_display_screen.dart';
+import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
