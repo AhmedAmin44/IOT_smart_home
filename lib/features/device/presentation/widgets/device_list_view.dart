@@ -1,5 +1,5 @@
-import 'package:IOT_SmartHome/features/device/presentation/widgets/device_card.dart';
 import 'package:flutter/material.dart';
+import 'device_card.dart';
 
 class DeviceListView extends StatelessWidget {
   final List<Map<String, dynamic>> devices;
@@ -10,10 +10,7 @@ class DeviceListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: devices.length,
-      itemBuilder: (context, index) {
-        final device = devices[index];
-        return DeviceCard(device: device);
-      },
+      itemBuilder: (context, index) => DeviceCard(device: devices[index]),
     );
   }
 }

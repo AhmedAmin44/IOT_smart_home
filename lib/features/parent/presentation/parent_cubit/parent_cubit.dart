@@ -1,7 +1,7 @@
-import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_state.dart';
 
 class ParentCubit extends Cubit<ParentState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,7 +16,6 @@ class ParentCubit extends Cubit<ParentState> {
     emit(ParentLoaded(familyId: familyId));
   }
 
-  ///  Initialize Local Notifications  
   void _initializeNotifications() {
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings();
@@ -25,7 +24,6 @@ class ParentCubit extends Cubit<ParentState> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  ///  Listen for New OTP Requests  
   void _listenForNewOTPRequests(String familyId) {
     _firestore
         .collection('otp_requests')
@@ -41,7 +39,6 @@ class ParentCubit extends Cubit<ParentState> {
     });
   }
 
-  ///  Show Local Notification for New OTP Request  
   Future<void> _showLocalNotification(Map<String, dynamic>? requestData) async {
     if (requestData == null) return;
     String deviceName = requestData['deviceName'] ?? '';
@@ -67,7 +64,6 @@ class ParentCubit extends Cubit<ParentState> {
     );
   }
 
-  //  Get Total Devices Count  
   Stream<int> getTotalDevicesCount(String familyId) {
     return _firestore
         .collection('devices')
@@ -76,7 +72,6 @@ class ParentCubit extends Cubit<ParentState> {
         .map((snapshot) => snapshot.docs.length);
   }
 
-  //  Get Active Requests Count  
   Stream<int> getActiveRequestsCount(String familyId) {
     return _firestore
         .collection('otp_requests')
@@ -86,7 +81,6 @@ class ParentCubit extends Cubit<ParentState> {
         .map((snapshot) => snapshot.docs.length);
   }
 
-  //Add Device--------
   Future<void> addDevice(String familyId, String name, bool isDangerous) async {
     try {
       await _firestore.collection('devices').add({
@@ -102,7 +96,6 @@ class ParentCubit extends Cubit<ParentState> {
     }
   }
 
-  /// Stream All Devices --------
   Stream<List<Map<String, dynamic>>> getDevices(String familyId) {
     return _firestore
         .collection('devices')
@@ -119,7 +112,6 @@ class ParentCubit extends Cubit<ParentState> {
             .toList());
   }
 
-  //Toggle Device Status-----------
   Future<void> toggleDeviceStatus(String deviceId, bool status) async {
     try {
       await _firestore.collection('devices').doc(deviceId).update({'status': status});
@@ -129,7 +121,6 @@ class ParentCubit extends Cubit<ParentState> {
     }
   }
 
-  ///  Delete Device ---------- 
   Future<void> deleteDevice(String deviceId) async {
     try {
       await _firestore.collection('devices').doc(deviceId).delete();
@@ -139,37 +130,65 @@ class ParentCubit extends Cubit<ParentState> {
     }
   }
 
-  ///  Approve OTP Request  
   Future<void> approveRequest(String requestId) async {
     try {
-      await _firestore.collection('otp_requests').doc(requestId).update({
+      final requestDoc = await _firestore.collection('otp_requests').doc(requestId).get();
+      if (!requestDoc.exists) throw Exception('Request not found');
+      final requestData = requestDoc.data() as Map<String, dynamic>;
+      final deviceId = requestData['deviceId'] as String;
+
+      final batch = _firestore.batch();
+      final requestRef = _firestore.collection('otp_requests').doc(requestId);
+      batch.update(requestRef, {
         'status': 'approved',
         'approvedTimestamp': FieldValue.serverTimestamp(),
       });
+
+      final deviceRef = _firestore.collection('devices').doc(deviceId);
+      batch.update(deviceRef, {
+        'status': true,
+        'lastUsed': FieldValue.serverTimestamp(),
+      });
+
+      await batch.commit();
       emit(OTPRequestApproved());
     } catch (e) {
-      emit(DeviceOperationFailure(error: e.toString()));
+      emit(DeviceOperationFailure(error: 'Approve failed: ${e.toString()}'));
     }
   }
 
-  ///  Reject OTP Request  
   Future<void> rejectRequest(String requestId) async {
     try {
-      await _firestore.collection('otp_requests').doc(requestId).update({
+      final requestDoc = await _firestore.collection('otp_requests').doc(requestId).get();
+      if (!requestDoc.exists) throw Exception('Request not found');
+      final requestData = requestDoc.data() as Map<String, dynamic>;
+      final deviceId = requestData['deviceId'] as String;
+
+      final batch = _firestore.batch();
+      final requestRef = _firestore.collection('otp_requests').doc(requestId);
+      batch.update(requestRef, {
         'status': 'rejected',
         'rejectedTimestamp': FieldValue.serverTimestamp(),
       });
+
+      final deviceRef = _firestore.collection('devices').doc(deviceId);
+      batch.update(deviceRef, {
+        'status': false,
+        'lastUsed': FieldValue.serverTimestamp(),
+      });
+
+      await batch.commit();
       emit(OTPRequestRejected());
     } catch (e) {
-      emit(DeviceOperationFailure(error: e.toString()));
+      emit(DeviceOperationFailure(error: 'Reject failed: ${e.toString()}'));
     }
   }
-  ///  Get Stream of Pending OTP Requests  
-Stream<QuerySnapshot<Map<String, dynamic>>> getOtpRequests(String familyId) {
-  return _firestore
-      .collection('otp_requests')
-      .where('familyId', isEqualTo: familyId)
-      .where('status', isEqualTo: 'pending')
-      .snapshots();
-}
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOtpRequests(String familyId) {
+    return _firestore
+        .collection('otp_requests')
+        .where('familyId', isEqualTo: familyId)
+        .where('status', isEqualTo: 'pending')
+        .snapshots();
+  }
 }

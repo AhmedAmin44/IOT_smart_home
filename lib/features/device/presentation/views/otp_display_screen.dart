@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../device_cubit/device_cubit.dart';
 
 class OTPDisplayScreen extends StatefulWidget {
   final String otpCode;
@@ -8,7 +10,7 @@ class OTPDisplayScreen extends StatefulWidget {
   final String familyId;
   final String deviceId;
   final String deviceName;
-  final String otpRequestId; 
+  final String otpRequestId;
 
   const OTPDisplayScreen({
     Key? key,
@@ -25,26 +27,73 @@ class OTPDisplayScreen extends StatefulWidget {
 }
 
 class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
-  int secondsRemaining = 600; 
-  Timer? countdownTimer;
+  int _secondsRemaining = 600;
+  Timer? _countdownTimer;
+  bool _hasNavigated = false;
+  StreamSubscription? _otpSubscription;
 
   @override
   void initState() {
     super.initState();
-    countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (secondsRemaining > 0) {
-        setState(() {
-          secondsRemaining--;
-        });
+    _startTimer();
+    _listenForStatusUpdates();
+  }
+
+  void _startTimer() {
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsRemaining > 0) {
+        setState(() => _secondsRemaining--);
       } else {
+        _cancelRequestAndClose();
         timer.cancel();
       }
     });
   }
 
+  void _listenForStatusUpdates() {
+    _otpSubscription = FirebaseFirestore.instance
+        .collection('otp_requests')
+        .doc(widget.otpRequestId)
+        .snapshots()
+        .listen((snapshot) async {
+      final data = snapshot.data();
+      // Proceed only if data exists, the widget hasn't already navigated, and is still mounted.
+      if (data == null || _hasNavigated || !mounted) return;
+      
+      // Check if either approvedTimestamp or rejectedTimestamp is present
+      if (data.containsKey('approvedTimestamp') || data.containsKey('rejectedTimestamp')) {
+        _hasNavigated = true;
+        if (data.containsKey('approvedTimestamp')) {
+          await context.read<DeviceCubit>().updateDeviceStatus(context, widget.deviceId, true);
+        }
+        if (data['status'] != 'completed') {
+          await FirebaseFirestore.instance
+              .collection('otp_requests')
+              .doc(widget.otpRequestId)
+              .update({'status': 'completed'});
+        }
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  Future<void> _cancelRequestAndClose() async {
+    if (!_hasNavigated && mounted) {
+      final doc = await FirebaseFirestore.instance
+          .collection('otp_requests')
+          .doc(widget.otpRequestId)
+          .get();
+      if (doc.exists && doc['status'] == 'pending') {
+        await doc.reference.delete();
+      }
+      if (mounted) Navigator.pop(context);
+    }
+  }
+
   @override
   void dispose() {
-    countdownTimer?.cancel();
+    _countdownTimer?.cancel();
+    _otpSubscription?.cancel();
     super.dispose();
   }
 
@@ -54,73 +103,25 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
     return "$minutes:${secs.toString().padLeft(2, '0')}";
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> _otpRequestStream() {
-    return FirebaseFirestore.instance
-        .collection('otp_requests')
-        .doc(widget.otpRequestId)
-        .snapshots();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('OTP Display'),
-      ),
-      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: _otpRequestStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final requestData = snapshot.data!.data();
-          String status = requestData?['status'] ?? 'pending';
-
-          if (status == 'approved') {
-            Future.microtask(() {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Request Approved.')),
-              );
-              Navigator.pop(context); // الخروج من شاشة OTP، أو التنقل إلى شاشة التحكم
-            });
-          } else if (status == 'rejected') {
-            Future.microtask(() {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Request Rejected.')),
-              );
-              Navigator.pop(context);
-            });
-          }
-
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.otpCode,
-                  style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Expires in ${formatTime(secondsRemaining)}',
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Cancel Request'),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Waiting for approval...',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
+      appBar: AppBar(title: Text('OTP Code: ${widget.otpCode}')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              formatTime(_secondsRemaining),
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
-          );
-        },
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _cancelRequestAndClose,
+              child: const Text('Cancel Request'),
+            ),
+          ],
+        ),
       ),
     );
   }
