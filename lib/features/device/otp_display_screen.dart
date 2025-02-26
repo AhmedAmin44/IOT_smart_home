@@ -8,7 +8,7 @@ class OTPDisplayScreen extends StatefulWidget {
   final String familyId;
   final String deviceId;
   final String deviceName;
-  final String otpRequestId; // معرف طلب OTP
+  final String otpRequestId; 
 
   const OTPDisplayScreen({
     Key? key,
@@ -25,7 +25,7 @@ class OTPDisplayScreen extends StatefulWidget {
 }
 
 class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
-  int secondsRemaining = 600; // عد تنازلي لمدة 10 دقائق
+  int secondsRemaining = 600; 
   Timer? countdownTimer;
 
   @override
@@ -54,7 +54,6 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
     return "$minutes:${secs.toString().padLeft(2, '0')}";
   }
 
-  // Stream لمستند طلب OTP المحدد
   Stream<DocumentSnapshot<Map<String, dynamic>>> _otpRequestStream() {
     return FirebaseFirestore.instance
         .collection('otp_requests')
@@ -77,19 +76,17 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
           final requestData = snapshot.data!.data();
           String status = requestData?['status'] ?? 'pending';
 
-          // إذا تغيرت الحالة إلى approved أو rejected
           if (status == 'approved') {
-            // يمكن عرض رسالة أو الانتقال مباشرة لشاشة التحكم بالجهاز
             Future.microtask(() {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('OTP Approved.')),
+                const SnackBar(content: Text('Request Approved.')),
               );
               Navigator.pop(context); // الخروج من شاشة OTP، أو التنقل إلى شاشة التحكم
             });
           } else if (status == 'rejected') {
             Future.microtask(() {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('OTP Rejected.')),
+                const SnackBar(content: Text('Request Rejected.')),
               );
               Navigator.pop(context);
             });
