@@ -12,7 +12,7 @@ class InviteForm extends StatelessWidget {
   final ValueChanged<String?> onRoleChanged;
   final VoidCallback onSendInvite;
 
-   InviteForm({
+  InviteForm({
     Key? key,
     required this.emailController,
     required this.firstNameController,
@@ -21,74 +21,70 @@ class InviteForm extends StatelessWidget {
     required this.selectedRole,
     required this.onRoleChanged,
     required this.onSendInvite,
-
   }) : super(key: key);
-      GlobalKey<FormState> sendInviteFormKey = GlobalKey();
+  GlobalKey<FormState> sendInviteFormKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-  key: sendInviteFormKey, 
-  child: Column(
-    children: [
-      TextFField(
-        labelText: 'First Name',
-        onChanged: (value) => firstNameController.text = value,
+      key: sendInviteFormKey,
+      child: Column(
+        children: [
+          TextFField(
+            labelText: 'First Name',
+            onChanged: (value) => firstNameController.text = value,
+          ),
+          TextFField(
+            labelText: 'Last Name',
+            onChanged: (value) => lastNameController.text = value,
+          ),
+          TextFField(
+            labelText: 'Email',
+            onChanged: (value) => emailController.text = value,
+            suffixIcon: const Icon(Icons.email, color: Colors.white),
+          ),
+          TextFField(
+            labelText: 'Password',
+            onChanged: (value) => passwordController.text = value,
+            obscureText: true,
+            suffixIcon: const Icon(Icons.lock, color: Colors.white),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 24, right: 8, left: 8),
+            child: DropdownButtonFormField<String>(
+              value: selectedRole ?? 'Role!',
+              dropdownColor: AppColors.secColor,
+              style: TextStyle(color: Colors.green),
+              decoration: InputDecoration(
+                labelText: 'Select Role',
+                labelStyle: TextStyle(color: Colors.white),
+                hintText: 'Choose a role',
+                hintStyle: TextStyle(color: Colors.white54),
+                border: getBordrStyle(),
+                enabledBorder: getBordrStyle(),
+                focusedBorder: getBordrStyle(),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: 'child',
+                  child: Text('Child', style: TextStyle(color: Colors.green)),
+                ),
+                DropdownMenuItem(
+                  value: 'mother',
+                  child: Text('Mother', style: TextStyle(color: Colors.green)),
+                ),
+              ],
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  onRoleChanged(newValue);
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 25),
+          CustomBotton(text: 'Send Invite', onPressed: onSendInvite),
+        ],
       ),
-      TextFField(
-        labelText: 'Last Name',
-        onChanged: (value) => lastNameController.text = value,
-      ),
-      TextFField(
-        labelText: 'Email',
-        onChanged: (value) => emailController.text = value,
-        suffixIcon: const Icon(Icons.email, color: Colors.white),
-      ),
-      TextFField(
-        labelText: 'Password',
-        onChanged: (value) => passwordController.text = value,
-        obscureText: true,
-        suffixIcon: const Icon(Icons.lock, color: Colors.white),
-      ),
-      Padding(
-  padding: const EdgeInsets.only(top: 24, right: 8, left: 8),
-  child: DropdownButtonFormField<String>(
-    value: selectedRole ?? 'child', // Ensure selectedRole is not null
-    dropdownColor: AppColors.darkGrey, // Background color of the dropdown
-    style: TextStyle(color: AppColors.offWhite), // Text color inside the dropdown
-    decoration: InputDecoration(
-      labelText: 'Select Role', // Ensure label is visible
-      labelStyle: TextStyle(color: Colors.white),
-      hintText: 'Choose a role', // Ensures visibility before selection
-      hintStyle: TextStyle(color: Colors.white54),
-      border: getBordrStyle(),
-      enabledBorder: getBordrStyle(),
-      focusedBorder: getBordrStyle(),
-    ),
-    items: [
-      DropdownMenuItem(
-        value: 'child',
-        child: Text('Child', style: TextStyle(color: Colors.white)),
-      ),
-      DropdownMenuItem(
-        value: 'mother',
-        child: Text('Mother', style: TextStyle(color: Colors.white)),
-      ),
-    ],
-    onChanged: (String? newValue) {
-      if (newValue != null) {
-        onRoleChanged(newValue); // Update state
-      }
-    },
-  ),
-),
-
-
-      const SizedBox(height: 25),
-      CustomBotton(text: 'Send Invite', onPressed: onSendInvite),
-    ],
-  ),
-);
-
+    );
   }
 }

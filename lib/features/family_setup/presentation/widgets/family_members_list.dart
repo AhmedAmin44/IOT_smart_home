@@ -25,105 +25,25 @@ class FamilyMembersList extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        
-        return Expanded(
+
+        final members = snapshot.data!.docs;
+
+        if (members.isEmpty) {
+          return const Center(child: Text('No family members found.'));
+        }
+
+        return Flexible(
           child: ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: members.length,
             itemBuilder: (context, index) {
-              final member = snapshot.data!.docs[index];
+              final member = members[index];
 
-              return Card(
-                color: AppColors.secColor,
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                child: ListTile(
-                  title: Text(
-                    member['email'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Role: ${member['role']}\nID: ${member.id}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              final firstNameController =
-                                  TextEditingController(text: member['firstName']);
-                              final lastNameController =
-                                  TextEditingController(text: member['lastName']);
-                              String selectedRole = member['role'];
-
-                              return AlertDialog(
-                                title: const Text('Update Family Member'),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextField(
-                                      controller: firstNameController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'First Name',
-                                      ),
-                                    ),
-                                    TextField(
-                                      controller: lastNameController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Last Name',
-                                      ),
-                                    ),
-                                    DropdownButtonFormField<String>(
-                                      value: selectedRole.isNotEmpty ? selectedRole : 'child',
-                                      items: const [
-                                        DropdownMenuItem(value: 'child', child: Text('Child')),
-                                        DropdownMenuItem(value: 'mother', child: Text('Mother')),
-                                        DropdownMenuItem(value: 'father', child: Text('Father')),
-                                      ],
-                                      onChanged: (value) => selectedRole = value!,
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      onUpdateMember(
-                                        context,
-                                        member.id,
-                                        firstNameController.text,
-                                        lastNameController.text,
-                                        selectedRole,
-                                      );
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Update'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => onRemoveMember(context, member.id),
-                      ),
-                    ],
-                  ),
-                ),
+              return MemberCard(
+                member: member,
+                onRemoveMember: onRemoveMember,
+                onUpdateMember: onUpdateMember,
               );
             },
           ),
@@ -133,3 +53,118 @@ class FamilyMembersList extends StatelessWidget {
   }
 }
 
+class MemberCard extends StatelessWidget {
+  final QueryDocumentSnapshot member;
+  final Function(BuildContext, String) onRemoveMember;
+  final Function(BuildContext, String, String, String, String) onUpdateMember;
+
+  const MemberCard({
+    Key? key,
+    required this.member,
+    required this.onRemoveMember,
+    required this.onUpdateMember,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: AppColors.secColor,
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: ListTile(
+        title: Text(
+          member['email'],
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+        subtitle: Text(
+          'Role: ${member['role']}\nID: ${member.id}',
+          style: const TextStyle(color: Colors.white),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // IconButton(
+            //   icon: const Icon(Icons.edit, color: Colors.blue),
+            //   onPressed: () => _showUpdateDialog(context, member),
+            // ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () => onRemoveMember(context, member.id),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showUpdateDialog(BuildContext context, QueryDocumentSnapshot member) {
+    final firstNameController =
+        TextEditingController(text: member['firstName']);
+    final lastNameController = TextEditingController(text: member['lastName']);
+    String selectedRole = member['role'];
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Update Family Member'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildTextField(firstNameController, 'First Name'),
+              _buildTextField(lastNameController, 'Last Name'),
+              _buildRoleDropdown(selectedRole, (value) {
+                selectedRole = value!;
+              }),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                onUpdateMember(
+                  context,
+                  member.id,
+                  firstNameController.text,
+                  lastNameController.text,
+                  selectedRole,
+                );
+                Navigator.of(context).pop();
+              },
+              child: const Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(labelText: label),
+      ),
+    );
+  }
+
+  Widget _buildRoleDropdown(
+      String selectedRole, ValueChanged<String?> onChanged) {
+    return DropdownButtonFormField<String>(
+      value: selectedRole.isNotEmpty ? selectedRole : 'child',
+      items: const [
+        DropdownMenuItem(value: 'child', child: Text('Child')),
+        DropdownMenuItem(value: 'mother', child: Text('Mother')),
+        DropdownMenuItem(value: 'father', child: Text('Father')),
+      ],
+      onChanged: onChanged,
+    );
+  }
+}

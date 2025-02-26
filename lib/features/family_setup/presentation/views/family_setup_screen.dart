@@ -27,13 +27,15 @@ class FamilySetupScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.backspace_outlined, color: Colors.white),
+            icon: const Icon(Icons.arrow_back, color: Colors.green, size: 25),
             onPressed: () {
               HomeNavBarWidget? homeNavBar =
                   context.findAncestorWidgetOfExactType<HomeNavBarWidget>();
 
               if (homeNavBar != null) {
-                homeNavBar.controller.jumpToTab(1);
+                homeNavBar.controller.jumpToTab(0);
+              } else {
+                Navigator.pop(context); 
               }
             },
           ),
@@ -52,12 +54,10 @@ class FamilySetupScreen extends StatelessWidget {
         ),
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
-            // Print state changes for debugging
             print("AuthState changed: $state");
           },
           builder: (context, state) {
-            return Expanded(
-                child: RoleBasedView(role: role, familyId: familyId));
+            return RoleBasedView(role: role, familyId: familyId);
           },
         ),
       ),
