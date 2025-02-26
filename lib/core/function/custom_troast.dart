@@ -11,7 +11,7 @@ import 'package:IOT_SmartHome/core/utils/app_colors.dart';
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
-      backgroundColor: AppColors.deepGrey,
+      backgroundColor: AppColors.secColor,
       textColor: Colors.white,
       fontSize: 16.0,
       );

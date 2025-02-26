@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:IOT_SmartHome/features/device/otp_display_screen.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -82,7 +83,7 @@ class DeviceCubit extends Cubit<DeviceState> {
   Future<void> updateDeviceStatus(BuildContext context, String deviceId, bool newStatus) async {
     try {
       await _firestore.collection('devices').doc(deviceId).update({'status': newStatus});
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Device status updated successfully.")));
+      ShowToast("Device status updated successfully.");
     } catch (e) {
       emit(DeviceError("Failed to update device status: $e"));
     }
