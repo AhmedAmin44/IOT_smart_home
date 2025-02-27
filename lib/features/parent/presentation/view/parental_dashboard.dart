@@ -1,5 +1,4 @@
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
-import 'package:IOT_SmartHome/core/utils/app_string.dart';
 import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
 import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
 import 'package:IOT_SmartHome/features/parent/presentation/widgets/otp_requests_list.dart';

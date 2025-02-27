@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../device_cubit/device_cubit.dart';
 
 class OTPDisplayScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class OTPDisplayScreen extends StatefulWidget {
 }
 
 class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
-  int _secondsRemaining = 600;
+  int _secondsRemaining = 10;
   Timer? _countdownTimer;
   bool _hasNavigated = false;
   StreamSubscription? _otpSubscription;
@@ -57,14 +58,22 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
         .snapshots()
         .listen((snapshot) async {
       final data = snapshot.data();
-      // Proceed only if data exists, the widget hasn't already navigated, and is still mounted.
       if (data == null || _hasNavigated || !mounted) return;
-      
-      // Check if either approvedTimestamp or rejectedTimestamp is present
-      if (data.containsKey('approvedTimestamp') || data.containsKey('rejectedTimestamp')) {
+      if (data['status'] == 'approved' || data['status'] == 'rejected') {
         _hasNavigated = true;
-        if (data.containsKey('approvedTimestamp')) {
+        if (data['status'] == 'approved') {
           await context.read<DeviceCubit>().updateDeviceStatus(context, widget.deviceId, true);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Request approved!')),
+            );
+          }
+        } else if (data['status'] == 'rejected') {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Request rejected!')),
+            );
+          }
         }
         if (data['status'] != 'completed') {
           await FirebaseFirestore.instance
@@ -72,7 +81,10 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
               .doc(widget.otpRequestId)
               .update({'status': 'completed'});
         }
-        Navigator.popUntil(context, (route) => route.settings.name == '/home_nav_bar');
+        if (widget.role == 'child') {
+          context.read<DeviceCubit>().fetchDevices();
+        }
+        GoRouter.of(context).go('/homeNavBar', extra: {'role': widget.role, 'familyId': widget.familyId});
       }
     });
   }
@@ -86,7 +98,7 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
       if (doc.exists && doc['status'] == 'pending') {
         await doc.reference.delete();
       }
-      if (mounted) Navigator.pop(context);
+      GoRouter.of(context).go('/homeNavBar', extra: {'role': widget.role, 'familyId': widget.familyId});
     }
   }
 
@@ -106,7 +118,7 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('OTP Code: ${widget.otpCode}')),
+      appBar: AppBar(title: const Text('Device OTP')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

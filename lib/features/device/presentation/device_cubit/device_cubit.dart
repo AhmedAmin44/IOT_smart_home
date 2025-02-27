@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 part 'device_state.dart';
 
 class DeviceCubit extends Cubit<DeviceState> {
@@ -48,7 +49,6 @@ class DeviceCubit extends Cubit<DeviceState> {
           .showSnackBar(const SnackBar(content: Text('Only children can request OTP.')));
       return;
     }
-    // Only consider requests with status 'pending'
     var existing = await _firestore
         .collection('otp_requests')
         .where('deviceId', isEqualTo: deviceId)
@@ -71,22 +71,14 @@ class DeviceCubit extends Cubit<DeviceState> {
         'timestamp': FieldValue.serverTimestamp(),
         'status': 'pending'
       });
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: this,
-            child: OTPDisplayScreen(
-              otpCode: otp,
-              role: role,
-              familyId: familyId,
-              deviceId: deviceId,
-              deviceName: deviceName,
-              otpRequestId: docRef.id,
-            ),
-          ),
-        ),
-      );
+      GoRouter.of(context).go('/otpDisplay', extra: {
+        'otpCode': otp,
+        'role': role,
+        'familyId': familyId,
+        'deviceId': deviceId,
+        'deviceName': deviceName,
+        'otpRequestId': docRef.id,
+      });
     } catch (e) {
       emit(DeviceError("Failed to request OTP: $e"));
     }
@@ -98,6 +90,7 @@ class DeviceCubit extends Cubit<DeviceState> {
         'status': newStatus,
         'lastUsed': FieldValue.serverTimestamp(),
       });
+      fetchDevices();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Updated!')),

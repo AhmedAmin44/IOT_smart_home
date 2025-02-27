@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/features/device/presentation/device_cubit/device_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import 'package:IOT_SmartHome/features/auth/presentation/views/signIn_view.dart'
 import 'package:IOT_SmartHome/features/auth/presentation/views/signUp_view.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:IOT_SmartHome/features/splash/view/splash_view.dart';
+import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
 
 import 'features/home/presentation/views/home_view.dart';
 import 'features/family_setup/presentation/views/family_setup_screen.dart';
@@ -74,6 +76,26 @@ final GoRouter router = GoRouter(routes: [
       final role = extra['role'] as String? ?? 'user';
       final familyId = extra['familyId'] as String;
       return HomeView(role: role, familyId: familyId);
+    },
+  ),
+  GoRoute(
+    path: "/otpDisplay",
+    builder: (context, state) {
+      final extra = state.extra as Map<String, dynamic>;
+      return BlocProvider(
+        create: (context) => DeviceCubit(
+          familyId: extra['familyId'],
+          role: extra['role'],
+        ),
+        child: OTPDisplayScreen(
+          otpCode: extra['otpCode'],
+          role: extra['role'],
+          familyId: extra['familyId'],
+          deviceId: extra['deviceId'],
+          deviceName: extra['deviceName'],
+          otpRequestId: extra['otpRequestId'],
+        ),
+      );
     },
   ),
 ]);
