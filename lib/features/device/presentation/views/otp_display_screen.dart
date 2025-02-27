@@ -72,7 +72,7 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
               .doc(widget.otpRequestId)
               .update({'status': 'completed'});
         }
-        Navigator.pop(context);
+        Navigator.popUntil(context, (route) => route.settings.name == '/home_nav_bar');
       }
     });
   }

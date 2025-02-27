@@ -42,52 +42,55 @@ class DeviceCubit extends Cubit<DeviceState> {
     return (100000 + random.nextInt(900000)).toString();
   }
 
-Future<void> requestOTP(BuildContext context, String deviceId, String deviceName) async {
-  if (role != 'child') {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Only children can request OTP.')));
-    return;
-  }
-  // Only consider requests with status 'pending'
-  var existing = await _firestore
-      .collection('otp_requests')
-      .where('deviceId', isEqualTo: deviceId)
-      .where('childId', isEqualTo: familyId)
-      .where('status', isEqualTo: 'pending')
-      .get();
-  if (existing.docs.isNotEmpty) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Request already pending for this device.')));
-    return;
-  }
-  String otp = _generateOTP();
-  try {
-    DocumentReference docRef = await _firestore.collection('otp_requests').add({
-      'otp': otp,
-      'childId': familyId,
-      'deviceId': deviceId,
-      'deviceName': deviceName,
-      'familyId': familyId,
-      'timestamp': FieldValue.serverTimestamp(),
-      'status': 'pending'
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OTPDisplayScreen(
-          otpCode: otp,
-          role: role,
-          familyId: familyId,
-          deviceId: deviceId,
-          deviceName: deviceName,
-          otpRequestId: docRef.id,
+  Future<void> requestOTP(BuildContext context, String deviceId, String deviceName) async {
+    if (role != 'child') {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Only children can request OTP.')));
+      return;
+    }
+    // Only consider requests with status 'pending'
+    var existing = await _firestore
+        .collection('otp_requests')
+        .where('deviceId', isEqualTo: deviceId)
+        .where('childId', isEqualTo: familyId)
+        .where('status', isEqualTo: 'pending')
+        .get();
+    if (existing.docs.isNotEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Request already pending for this device.')));
+      return;
+    }
+    String otp = _generateOTP();
+    try {
+      DocumentReference docRef = await _firestore.collection('otp_requests').add({
+        'otp': otp,
+        'childId': familyId,
+        'deviceId': deviceId,
+        'deviceName': deviceName,
+        'familyId': familyId,
+        'timestamp': FieldValue.serverTimestamp(),
+        'status': 'pending'
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: this,
+            child: OTPDisplayScreen(
+              otpCode: otp,
+              role: role,
+              familyId: familyId,
+              deviceId: deviceId,
+              deviceName: deviceName,
+              otpRequestId: docRef.id,
+            ),
+          ),
         ),
-      ),
-    );
-  } catch (e) {
-    emit(DeviceError("Failed to request OTP: $e"));
+      );
+    } catch (e) {
+      emit(DeviceError("Failed to request OTP: $e"));
+    }
   }
-}
 
   Future<void> updateDeviceStatus(BuildContext context, String deviceId, bool newStatus) async {
     try {

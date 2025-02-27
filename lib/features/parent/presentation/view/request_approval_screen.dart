@@ -1,5 +1,7 @@
 import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../parent_cubit/parent_cubit.dart';
 
 class OTPApprovalScreen extends StatefulWidget {
   const OTPApprovalScreen({Key? key}) : super(key: key);
@@ -38,6 +40,7 @@ class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: () {
+                      context.read<ParentCubit>().approveRequest(requestController.text);
                       ShowToast("The Request Approved: ${requestController.text}");
                       print("The Request Approved: ${requestController.text}");
                     },
@@ -50,9 +53,9 @@ class _OTPApprovalScreenState extends State<OTPApprovalScreen> {
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () {
+                      context.read<ParentCubit>().rejectRequest(requestController.text);
                       ShowToast(
                           "The Request  Rejected: ${requestController.text}");
-
                       print("The Request  Rejected: ${requestController.text}");
                     },
                     child: const Text('Reject'),
