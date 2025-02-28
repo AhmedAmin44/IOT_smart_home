@@ -9,6 +9,8 @@ import 'package:IOT_SmartHome/features/auth/presentation/views/signUp_view.dart'
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:IOT_SmartHome/features/splash/view/splash_view.dart';
 import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/views/otp_verification.dart';
+import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
 
 import 'features/home/presentation/views/home_view.dart';
 import 'features/family_setup/presentation/views/family_setup_screen.dart';
@@ -95,6 +97,16 @@ final GoRouter router = GoRouter(routes: [
           deviceName: extra['deviceName'],
           otpRequestId: extra['otpRequestId'],
         ),
+      );
+    },
+  ),
+  GoRoute(
+    path: "/otp_verification",
+    builder: (context, state) {
+      final successRoute = state.extra as String;
+      return BlocProvider(
+        create: (context) => OtpCubit(),
+        child: OtpScreen(successRoute: successRoute),
       );
     },
   ),

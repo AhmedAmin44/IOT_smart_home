@@ -10,6 +10,7 @@ import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_
 
 class FatherView extends StatelessWidget {
   final String familyId;
+  final String currentUserRole = 'father'; // Assuming the current user is the father
 
   const FatherView({Key? key, required this.familyId}) : super(key: key);
 
@@ -35,7 +36,7 @@ class FatherView extends StatelessWidget {
                 return FamilyMembersList(
                   familyId: familyId,
                   onRemoveMember: (ctx, userId) =>
-                      cubit.removeMember(ctx, userId),
+                      cubit.removeMember(ctx, userId, currentUserRole),
                   onUpdateMember: (ctx, userId, firstName, lastName, role) =>
                       cubit.updateMember(
                           ctx, userId, firstName, lastName, role),

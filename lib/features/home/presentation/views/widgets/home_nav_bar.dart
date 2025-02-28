@@ -57,7 +57,10 @@ class HomeNavBarWidget extends StatelessWidget {
     } else if (role == 'mother') {
       return [
         HomeView(role: role, familyId: familyId),
-        const OTPApprovalScreen(),
+        BlocProvider(
+          create: (context) => ParentCubit()..initialize(familyId: familyId),
+          child: DeviceControlScreen(role: role, familyId: familyId),
+        ),
         ParentalDashboard(familyId: familyId),
       ];
     } else if (role == 'child') {
@@ -112,11 +115,11 @@ class HomeNavBarWidget extends StatelessWidget {
           inactiveIcon: Image.asset(AppImages.home_inactive),
         ),
         PersistentBottomNavBarItem(
-          icon: const Icon(Icons.verified),
-          title: "OTP Approval",
+          icon: const Icon(Icons.devices),
+          title: "Device Control",
           activeColorPrimary: const Color.fromARGB(179, 93, 148, 86),
-          activeColorSecondary: AppColors.lightGrey,
-          inactiveIcon: const Icon(Icons.verified_outlined),
+          activeColorSecondary: Colors.white,
+          inactiveIcon: const Icon(Icons.devices_outlined),
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.dashboard),
