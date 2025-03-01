@@ -1,16 +1,14 @@
-import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/views/family_setup_screen.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/parent_cubit/parent_cubit.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/view/device_control_screen.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/view/parental_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_images.dart';
 
 import '../../../../device/presentation/views/device_list_screen.dart';
-import '../../../../family_setup/presentation/views/family_setup_screen.dart';
-import '../../../../parent/presentation/view/device_control_screen.dart';
-import '../../../../parent/presentation/view/request_approval_screen.dart';
-import '../../../../parent/presentation/view/parental_dashboard.dart';
 import '../home_view.dart';
 
 // Import screens from your features folders:

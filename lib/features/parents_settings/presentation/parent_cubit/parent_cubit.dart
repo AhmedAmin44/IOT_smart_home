@@ -1,7 +1,7 @@
+import 'package:IOT_SmartHome/features/parents_settings/presentation/parent_cubit/parent_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_state.dart';
 
 class ParentCubit extends Cubit<ParentState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

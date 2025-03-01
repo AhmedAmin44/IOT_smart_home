@@ -1,5 +1,5 @@
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_id_card.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_members_list.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/family_id_card.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/family_members_list.dart';
 import 'package:flutter/material.dart';
 
 class MotherView extends StatelessWidget {

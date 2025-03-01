@@ -1,4 +1,4 @@
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_id_card.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/family_id_card.dart';
 import 'package:flutter/material.dart';
 
 class ChildView extends StatelessWidget {

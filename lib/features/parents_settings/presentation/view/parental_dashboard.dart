@@ -1,8 +1,8 @@
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
-import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
-import 'package:IOT_SmartHome/features/parent/presentation/widgets/otp_requests_list.dart';
-import 'package:IOT_SmartHome/features/parent/presentation/widgets/parental_dashboard_stats.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/parent_cubit/parent_cubit.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/widgets/otp_requests_list.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/widgets/parental_dashboard_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';

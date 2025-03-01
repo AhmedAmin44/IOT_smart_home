@@ -1,4 +1,5 @@
 import 'package:IOT_SmartHome/features/device/presentation/device_cubit/device_cubit.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/views/family_setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +14,6 @@ import 'package:IOT_SmartHome/features/otp_screen/presentation/views/otp_verific
 import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
 
 import 'features/home/presentation/views/home_view.dart';
-import 'features/family_setup/presentation/views/family_setup_screen.dart';
 
 final GoRouter router = GoRouter(routes: [
   GoRoute(

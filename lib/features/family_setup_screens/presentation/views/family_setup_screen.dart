@@ -1,6 +1,6 @@
-import 'package:IOT_SmartHome/features/family_setup/presentation/views/child_screen.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/views/father_screen.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/views/mother_screen.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/views/child_screen.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/views/father_screen.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/views/mother_screen.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

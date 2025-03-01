@@ -1,4 +1,4 @@
-import 'package:IOT_SmartHome/features/parent/presentation/parent_cubit/parent_cubit.dart';
+import 'package:IOT_SmartHome/features/parents_settings/presentation/parent_cubit/parent_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/app_colors.dart';

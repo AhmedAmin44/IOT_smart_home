@@ -1,13 +1,9 @@
-import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_container.dart';
-import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:screenutil_module/main.dart';
-
-import '../../../parent/presentation/widgets/add_device_dialog.dart';
 
 class HomeView extends StatelessWidget {
   final String role;

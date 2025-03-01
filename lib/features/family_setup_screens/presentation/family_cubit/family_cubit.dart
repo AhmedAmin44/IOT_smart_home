@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -59,19 +60,39 @@ class FamilyCubit extends Cubit<FamilyState> {
       return;
     }
 
-    bool confirm = await showDialog(
+    bool confirm = await 
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Deletion'),
-        content: const Text('Are you sure you want to remove this member?'),
+        backgroundColor: AppColors.secColor,
+        title: const Text('Confirm Deletion',
+        style:TextStyle(
+          color: Colors.green,
+          fontSize: 20,
+          fontWeight: FontWeight.bold
+        ) ),
+        content: const Text('Are you sure you want to remove this member?',
+        style:TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w500
+        )),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: const Text('Cancel',style:TextStyle(
+          color: Colors.green,
+          fontSize: 15,
+          fontWeight: FontWeight.w300
+        )),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Confirm'),
+            child: const Text('Confirm',style:TextStyle(
+          color: Colors.red,
+          fontSize: 15,
+          fontWeight: FontWeight.bold
+        )),
           ),
         ],
       ),

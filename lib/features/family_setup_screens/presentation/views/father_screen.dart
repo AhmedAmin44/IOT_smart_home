@@ -1,12 +1,12 @@
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
 import 'package:IOT_SmartHome/core/widgets/customButton.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/family_cubit/family_cubit.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/invite_family.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/family_cubit/family_cubit.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/family_id_card.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/family_members_list.dart';
+import 'package:IOT_SmartHome/features/family_setup_screens/presentation/widgets/invite_family.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_id_card.dart';
-import 'package:IOT_SmartHome/features/family_setup/presentation/widgets/family_members_list.dart';
 
 class FatherView extends StatelessWidget {
   final String familyId;
