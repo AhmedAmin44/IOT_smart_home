@@ -8,7 +8,7 @@ import 'package:IOT_SmartHome/features/auth/presentation/views/signIn_view.dart'
 import 'package:IOT_SmartHome/features/auth/presentation/views/signUp_view.dart';
 import 'package:IOT_SmartHome/features/home/presentation/views/widgets/home_nav_bar.dart';
 import 'package:IOT_SmartHome/features/splash/view/splash_view.dart';
-import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
+import 'package:IOT_SmartHome/features/device/presentation/views/request_display_screen.dart';
 import 'package:IOT_SmartHome/features/otp_screen/presentation/views/otp_verification.dart';
 import 'package:IOT_SmartHome/features/otp_screen/presentation/otp_cubit/otp_cubit.dart';
 

@@ -59,154 +59,80 @@ class AuthCubit extends Cubit<AuthState> {
     if (!isClosed) emit(state);
   }
 
-  Future<void> signUpWithEmailAndPassword() async {
-    try {
-      _emitState(SignUpLoadingState());
+bool isValidEmail(String email) {
+  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+  return emailRegex.hasMatch(email);
+}
 
-      if (firstName == null ||
-          lastName == null ||
-          phone == null ||
-          emailAddress == null ||
-          password == null) {
-        _emitState(SignUpFailureState(errmsg: 'Please fill all required fields'));
-        return;
-      }
+bool isValidPhone(String phone) {
+  final phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
+  return phoneRegex.hasMatch(phone);
+}
 
-        role = 'father';
-        familyId = const Uuid().v4();
-    
-
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: emailAddress!,
-        password: password!,
-      );
-
-      await _firestore.collection('users').doc(credential.user!.uid).set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': emailAddress,
-        'phone': phone,
-        'role': role,
-        'familyId': familyId,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      await _verifyPhoneNumber(phone!);
-      String uid = credential.user!.uid;
-      await addUserProfile(uid);
-      emailAddress = await getUserEmail(uid);
-
-      await otpCubit.sendOTP();
-      await sendVerificationEmail();
-      _emitState(SignUpSuccessState());
-    } on FirebaseAuthException catch (e) {
-      _handleSignUpException(e);
-    } catch (e) {
-      _emitState(SignUpFailureState(errmsg: e.toString()));
-    }
-  }
-
-  Future<void> _verifyPhoneNumber(String phone) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phone,
-      verificationCompleted: (credential) async {
-        await _auth.currentUser!.linkWithCredential(credential);
-      },
-      verificationFailed: (e) {
-        _emitState(SignUpFailureState(errmsg: 'Phone verification failed: ${e.message}'));
-      },
-      codeSent: (verificationId, _) {
-        this.verificationId = verificationId;
-        _emitState(PhoneCodeSentState());
-      },
-      codeAutoRetrievalTimeout: (_) {},
-    );
-  }
-
-  Future<void> verifyPhoneOTP(String smsCode) async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: smsCode,
-      );
-      await _auth.currentUser!.linkWithCredential(credential);
-      _emitState(PhoneVerificationSuccessState());
-    } catch (e) {
-      _emitState(SignUpFailureState(errmsg: 'Invalid verification code'));
-    }
-  }
-
-Future<void> sendFamilyInvite({
-  required String email,
-  required String firstName,
-  required String lastName,
-  required String role,
-  required String password,
-}) async {
+Future<void> signUpWithEmailAndPassword() async {
   try {
-    if (this.role != 'father') {
-      _emitState(OperationFailureState(errMsg: 'Unauthorized action'));
+    _emitState(SignUpLoadingState());
+
+    if (firstName == null ||
+        lastName == null ||
+        phone == null ||
+        emailAddress == null ||
+        password == null) {
+      _emitState(SignUpFailureState(errmsg: 'Please fill all required fields'));
       return;
     }
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
+
+    if (!isValidEmail(emailAddress!)) {
+      _emitState(SignUpFailureState(errmsg: 'Please enter a valid email address.'));
+      return;
+    }
+    if (!isValidPhone(phone!)) {
+      _emitState(SignUpFailureState(errmsg: 'Please enter a valid phone number.'));
+      return;
+    }
+    
+    final querySnapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: emailAddress)
+        .limit(1)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      _emitState(SignUpFailureState(errmsg: 'Email already in use'));
+      return;
+    }
+
+    role = 'father';
+    familyId = const Uuid().v4();
+
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: emailAddress!,
+      password: password!,
     );
-    await _firestore.collection('users').doc(userCredential.user!.uid).set({
+
+    await _firestore.collection('users').doc(credential.user!.uid).set({
       'firstName': firstName,
       'lastName': lastName,
-      'email': email,
+      'email': emailAddress,
+      'phone': phone,
       'role': role,
       'familyId': familyId,
       'createdAt': FieldValue.serverTimestamp(),
     });
-    _emitState(InviteSentSuccessState());
+
+    // await _verifyPhoneNumber(phone!);
+
+    String uid = credential.user!.uid;
+    await addUserProfile(uid);
+    emailAddress = await getUserEmail(uid);
+      await otpCubit.sendOTP();
+    await sendVerificationEmail();
+    _emitState(SignUpSuccessState());
   } on FirebaseAuthException catch (e) {
-    _emitState(OperationFailureState(errMsg: e.message ?? 'Failed to create user account'));
+    _handleSignUpException(e);
   } catch (e) {
-    _emitState(OperationFailureState(errMsg: e.toString()));
+    _emitState(SignUpFailureState(errmsg: e.toString()));
   }
 }
-
-  Future<void> joinFamilyWithInvite({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      _emitState(SignUpLoadingState());
-      final inviteDoc = await _firestore.collection('family_invites').doc(email).get();
-
-      if (!inviteDoc.exists) {
-        _emitState(SignUpFailureState(errmsg: 'Invalid invite code'));
-        return;
-      }
-
-      if (firstName == null || lastName == null || phone == null) {
-        _emitState(SignUpFailureState(errmsg: 'Please fill all required fields'));
-        return;
-      }
-
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      await _firestore.collection('users').doc(credential.user!.uid).set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'phone': phone,
-        'role': 'child',
-        'familyId': inviteDoc['familyId'],
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      await inviteDoc.reference.delete();
-      _emitState(SignUpSuccessState());
-    } on FirebaseAuthException catch (e) {
-      _emitState(SignUpFailureState(errmsg: e.message ?? 'Registration failed'));
-    }
-  }
 
   void _handleSignUpException(FirebaseAuthException e) {
     if (e.code == 'weak-password') {
@@ -292,43 +218,6 @@ Future<void> sendFamilyInvite({
     }
   }
 
-  Future<void> requestDeviceAccess(String deviceId) async {
-    if (role != 'child') return;
-    final otp = (1000 + Random().nextInt(9000)).toString();
-    await _firestore.collection('requests').add({
-      'childId': _auth.currentUser!.uid,
-      'deviceId': deviceId,
-      'otp': otp,
-      'status': 'pending',
-      'timestamp': FieldValue.serverTimestamp(),
-      'familyId': familyId,
-    });
-    _emitState(OTPGeneratedState(otp: otp));
-  }
-
-  Future<void> approveRequest(String otp) async {
-    try {
-      final requestSnapshot = await _firestore
-          .collection('requests')
-          .where('otp', isEqualTo: otp)
-          .where('familyId', isEqualTo: familyId)
-          .where('status', isEqualTo: 'pending')
-          .get();
-      if (requestSnapshot.docs.isEmpty) {
-        _emitState(RequestApprovalFailureState(errMsg: 'Invalid OTP'));
-        return;
-      }
-      await requestSnapshot.docs.first.reference.update({
-        'status': 'approved',
-        'approvedBy': _auth.currentUser!.uid,
-        'approvedAt': FieldValue.serverTimestamp(),
-      });
-      _emitState(RequestApprovalSuccessState());
-    } catch (e) {
-      _emitState(RequestApprovalFailureState(errMsg: e.toString()));
-    }
-  }
-
   Future<void> addUserProfile(String uid) async {
     await _firestore.collection("users").doc(uid).set({
       "firstname": firstName,
@@ -367,83 +256,8 @@ Future<void> sendFamilyInvite({
     obscurePasswordTextValue = !obscurePasswordTextValue!;
     _emitState(ObscurePasswordTextUpdateState());
   }
-
-  Future<void> addFamilyMember({
-    required String email,
-    required String firstName,
-    required String lastName,
-    required String role,
-    required String password,
-  }) async {
-    try {
-      if (this.role != 'father') {
-        _emitState(OperationFailureState(errMsg: 'Unauthorized action'));
-        return;
-      }
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      familyId ??= await _firestore.collection('families').add({
-            'fatherId': _auth.currentUser!.uid,
-            'createdAt': FieldValue.serverTimestamp(),
-          }).then((doc) => doc.id);
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'role': role,
-        'familyId': familyId,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-      _emitState(InviteSentSuccessState());
-    } on FirebaseAuthException catch (e) {
-      _emitState(OperationFailureState(errMsg: e.message ?? 'Failed to create user account'));
-    } catch (e) {
-      _emitState(OperationFailureState(errMsg: e.toString()));
-    }
-  }
-
-  Future<void> removeFamilyMember(String userId) async {
-    try {
-      if (this.role != 'father') {
-        _emitState(OperationFailureState(errMsg: 'Unauthorized action'));
-        return;
-      }
-      await _firestore.collection('users').doc(userId).delete();
-      User? user = _auth.currentUser;
-      await user?.delete();
-      _emitState(OperationSuccessState());
-    } catch (e) {
-      _emitState(OperationFailureState(errMsg: e.toString()));
-    }
-  }
-
-  Future<void> updateFamilyMember({
-    required String userId,
-    required String firstName,
-    required String lastName,
-    required String role,
-  }) async {
-    try {
-      if (this.role != 'father') {
-        _emitState(OperationFailureState(errMsg: 'Unauthorized action'));
-        return;
-      }
-      await _firestore.collection('users').doc(userId).update({
-        'firstName': firstName,
-        'lastName': lastName,
-        'role': role,
-      });
-      _emitState(OperationSuccessState());
-    } catch (e) {
-      _emitState(OperationFailureState(errMsg: e.toString()));
-    }
-  }
 }
-
 class OTPSentState extends AuthState {
   final String role;
   OTPSentState({required this.role});
 }
-

@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:IOT_SmartHome/core/function/custom_troast.dart';
-import 'package:IOT_SmartHome/features/device/presentation/views/otp_display_screen.dart';
+import 'package:IOT_SmartHome/features/device/presentation/views/request_display_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 part 'device_state.dart';

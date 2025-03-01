@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../device_cubit/device_cubit.dart';
-import '../views/otp_display_screen.dart';
+import '../views/request_display_screen.dart';
 
 class DeviceCard extends StatelessWidget {
   final Map<String, dynamic> device;
