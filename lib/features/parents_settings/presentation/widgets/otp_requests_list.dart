@@ -23,7 +23,10 @@ class OtpRequestsList extends StatelessWidget {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No pending requests.'));
+          return const Center(child: Text('No pending requests.'
+          ,style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.green),
+          ));
         }
 
         final requests = snapshot.data!.docs;

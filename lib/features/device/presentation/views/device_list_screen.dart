@@ -57,7 +57,11 @@ class DeviceListScreen extends StatelessWidget {
             ),
           );
         }
-        return const Center(child: Text('No devices found'));
+        return const Center(child: Text('No devices found',style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+             ));
       },
     );
   }
