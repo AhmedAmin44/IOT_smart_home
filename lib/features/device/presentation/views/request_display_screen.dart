@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:IOT_SmartHome/core/utils/app_text_style.dart';
 import 'package:IOT_SmartHome/core/widgets/customButton.dart';
@@ -70,15 +71,13 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
               .read<DeviceCubit>()
               .updateDeviceStatus(context, widget.deviceId, true);
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Request approved!')),
-            );
+            ShowToast( 'Request approved!');
+           
           }
         } else if (data['status'] == 'rejected') {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Request rejected!')),
-            );
+            ShowToast('Request rejected!');
+           
           }
         }
         if (data['status'] != 'completed') {
@@ -90,6 +89,7 @@ class _OTPDisplayScreenState extends State<OTPDisplayScreen> {
         if (widget.role == 'child') {
           context.read<DeviceCubit>().fetchDevices();
         }
+        
         GoRouter.of(context).go('/homeNavBar',
             extra: {'role': widget.role, 'familyId': widget.familyId});
       }

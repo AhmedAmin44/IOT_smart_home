@@ -1,5 +1,5 @@
 specVersion: "v1beta"
-serviceId: "passwordgen"
+serviceId: "IOTSmartHome"
 location: "us-central1"
 schema:
   source: "./schema"
@@ -7,6 +7,6 @@ schema:
     postgresql:
       database: "fdcdb"
       cloudSql:
-        instanceId: "passwordgen-fdc"
+        instanceId: "IOTSmartHome-fdc"
       # schemaValidation: "COMPATIBLE"
 connectorDirs: ["./connector"]

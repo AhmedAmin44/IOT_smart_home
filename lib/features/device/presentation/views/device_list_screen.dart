@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
@@ -39,9 +40,8 @@ class DeviceListScreen extends StatelessWidget {
     return BlocConsumer<DeviceCubit, DeviceState>(
       listener: (context, state) {
         if (state is DeviceError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ShowToast( state.message);
+         
         }
       },
       builder: (context, state) {

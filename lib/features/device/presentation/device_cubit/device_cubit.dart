@@ -45,8 +45,8 @@ class DeviceCubit extends Cubit<DeviceState> {
 
   Future<void> requestOTP(BuildContext context, String deviceId, String deviceName) async {
     if (role != 'child') {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Only children can request OTP.')));
+      ShowToast('Only children can request OTP.')
+      ;
       return;
     }
     var existing = await _firestore
@@ -56,8 +56,7 @@ class DeviceCubit extends Cubit<DeviceState> {
         .where('status', isEqualTo: 'pending')
         .get();
     if (existing.docs.isNotEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Request already pending for this device.')));
+            ShowToast('Request already pending for this device.');
       return;
     }
     String otp = _generateOTP();
@@ -92,9 +91,8 @@ class DeviceCubit extends Cubit<DeviceState> {
       });
       fetchDevices();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Updated!')),
-        );
+        ShowToast(' Device Updated!');
+        
       }
     } catch (e) {
       if (context.mounted) {

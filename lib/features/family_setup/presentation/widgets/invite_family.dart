@@ -14,6 +14,7 @@ class InviteFamilyMember extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
@@ -30,23 +31,26 @@ class InviteFamilyMember extends StatelessWidget {
           final cubit = context.read<FamilyCubit>();
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 35),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
-              children: [
-                Text("Please fill this data ",
-                    style: CustomTextStyles.pacifico400style64
-                        .copyWith(fontSize: 22, color: AppColors.offWhite,fontFamily: 'poppins')),
-                InviteForm(
-                  emailController: cubit.emailController,
-                  firstNameController: cubit.firstNameController,
-                  lastNameController: cubit.lastNameController,
-                  passwordController: cubit.passwordController,
-                  selectedRole: cubit.selectedRole,
-                  onRoleChanged: cubit.changeRole,
-                  onSendInvite: () => cubit.sendInvite(familyId),
-                ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 10,
+                children: [
+                  Text("Please fill this data ",
+                      style: CustomTextStyles.pacifico400style64
+                          .copyWith(fontSize: 22, color: AppColors.offWhite,fontFamily: 'poppins')),
+                  InviteForm(
+                    emailController: cubit.emailController,
+                    firstNameController: cubit.firstNameController,
+                    lastNameController: cubit.lastNameController,
+                    passwordController: cubit.passwordController,
+                    selectedRole: cubit.selectedRole,
+                    onRoleChanged: cubit.changeRole,
+                    onSendInvite: () => cubit.sendInvite(familyId),
+                  ),
+                ],
+              ),
             ),
           );
         },

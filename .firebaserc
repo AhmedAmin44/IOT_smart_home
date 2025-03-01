@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "passwordgen-58bf3",
-    "pass_gen": "passwordgen-58bf3"
+    "default": "IOTSmartHome-58bf3",
+    "pass_gen": "IOTSmartHome-58bf3"
   },
   "targets": {},
   "etags": {}

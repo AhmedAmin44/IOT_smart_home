@@ -124,8 +124,8 @@ class _OtpScreenState extends State<OtpScreen> {
         .doc(user.uid)
         .get();
 
-    if (!userDoc.exists) return 'user';
+    if (!userDoc.exists) return 'father';
 
-    return userDoc['role'] ?? 'user';
+    return userDoc['role'] ?? 'father';
   }
 }

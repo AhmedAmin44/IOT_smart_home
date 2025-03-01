@@ -82,7 +82,7 @@ class InviteForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 25),
-          CustomBotton(text: 'Send Invite', onPressed: onSendInvite),
+          CustomBotton(text: 'Add Member !', onPressed: onSendInvite),
         ],
       ),
     );

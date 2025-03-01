@@ -20,8 +20,8 @@ class OtpCubit extends Cubit<OtpState> {
       }
 
       EmailOTP.config(
-        appEmail: "contact@PasswordGenerator.com",
-        appName: "Password Generator Email OTP",
+        appEmail: "contact@IOTSmartHome.com",
+        appName: "IOT Smart home Email OTP",
         emailTheme: EmailTheme.v3,
         otpLength: 4,
         otpType: OTPType.numeric,

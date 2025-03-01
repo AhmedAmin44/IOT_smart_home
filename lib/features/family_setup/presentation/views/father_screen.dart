@@ -45,7 +45,7 @@ class FatherView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             CustomBotton(
-              text: "Invite Member !",
+              text: "Add Member !",
               onPressed: () {
                 Navigator.push(
                   context,

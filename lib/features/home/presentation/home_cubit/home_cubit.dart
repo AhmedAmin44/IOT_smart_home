@@ -10,30 +10,9 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
   XFile? profilePic;
 
-  /// 🔹 Fetch last generated password from Firestore
-  Future<void> fetchLastPassword() async {
-    emit(LastPasswordLoading());
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      emit(LastPasswordError("User not found"));
-      return;
-    }
-
-    final userDoc = await FirebaseFirestore.instance
-        .collection('userPasswords')
-        .doc(user.uid)
-        .get();
-
-    if (userDoc.exists && userDoc.data() != null) {
-      emit(LastPasswordVisible(userDoc.data()!['password']));
-    } else {
-      emit(LastPasswordError("No password found"));
-    }
-  }
+  
 
   /// 🔹 Fetch FirstName from Firestore
-
   Future<String> getUserName() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return 'User';
@@ -45,33 +24,12 @@ class HomeCubit extends Cubit<HomeState> {
 
     if (!userDoc.exists) return 'User';
 
-    return userDoc.data()?['firstName'] ?? 'User';
+    return userDoc.data()?['firstname'] ?? 'User';
   }
 
-  Future<void> pickAndUploadProfilePic() async {
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-      if (image == null) {
-        emit(UploadProfilePicError(errorMsg: "No image selected."));
-        return;
-      }
-      uploadProfilePic(image);
-    } catch (e) {
-      emit(UploadProfilePicError(errorMsg: "$e"));
-    }
-  }
-
-  void uploadProfilePic(XFile image) {
-    try {
-      profilePic = image;
-      emit(UploadProfilePic());
-    } catch (e) {
-      emit(UploadProfilePicError(errorMsg: "$e"));
-    }
-  }
-
+  
+  
+// not now
   Future<void> logout() async {
     try {
       await FirebaseAuth.instance.signOut();

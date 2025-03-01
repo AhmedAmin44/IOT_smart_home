@@ -1,3 +1,4 @@
+import 'package:IOT_SmartHome/core/function/custom_troast.dart';
 import 'package:IOT_SmartHome/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +51,6 @@ class FamilyIdCard extends StatelessWidget {
 
   void copyToClipboard(BuildContext context) {
     Clipboard.setData(ClipboardData(text: familyId));
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Family ID copied')));
-  }
+    ShowToast('Family ID copied');
+    }
 }

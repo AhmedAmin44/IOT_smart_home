@@ -26,7 +26,6 @@ class FamilyCubit extends Cubit<FamilyState> {
     print("Sending invite for ${emailController.text}");
 
     try {
-      // Create user in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
@@ -42,9 +41,8 @@ class FamilyCubit extends Cubit<FamilyState> {
       });
 
       emit(FamilyMemberAdded());
-      Fluttertoast.showToast(msg: "Invite sent successfully!");
+      Fluttertoast.showToast(msg: "Add successfully!");
 
-      // Clear inputs after sending
       emailController.clear();
       firstNameController.clear();
       lastNameController.clear();
